@@ -3,7 +3,9 @@ import pymysql
 
 def get_pyconfig(database):
     pyconfig = {
-        'host':'192.168.100.109',
+        #'host':'192.168.100.109',
+        'host':'label_db',
+        'port':3306,
         'user':'root',
         'password':'yd_db_pass',
         'database': database
