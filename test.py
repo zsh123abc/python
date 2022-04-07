@@ -102,4 +102,3 @@ def test_delete_file_error():
     data = resp.json()
     print("data: ", data)
     assert resp.status_code == 404
-

@@ -1,0 +1,26 @@
+<annotation>
+    <image>1310013</image>
+    <category>person</category>
+    <subcategory>male</subcategory>
+    <keypoints>
+        <keypoint name="B_Head" visible="1" x="103.00" y="147.00" z="0.00" zorder="0" />
+        <keypoint name="L_Ankle" visible="0" x="539.85" y="304.82" z="244.31" zorder="0" />
+        <keypoint name="L_Ear" visible="0" x="125.22" y="186.50" z="0.00" zorder="0" />
+        <keypoint name="L_Elbow" visible="1" x="275.00" y="144.00" z="242.19" zorder="0" />
+        <keypoint name="L_Eye" visible="1" x="149.49" y="148.07" z="0.00" zorder="0" />
+        <keypoint name="L_Hip" visible="0" x="335.57" y="302.80" z="156.58" zorder="0" />
+        <keypoint name="L_Knee" visible="0" x="474.12" y="173.35" z="156.58" zorder="0" />
+        <keypoint name="L_Shoulder" visible="0" x="226.35" y="213.80" z="148.71" zorder="0" />
+        <keypoint name="L_Wrist" visible="0" x="174.77" y="169.30" z="265.63" zorder="0" />
+        <keypoint name="Neck" visible="1" x="157.58" y="213.80" z="0.00" zorder="0" />
+        <keypoint name="Nose" visible="1" x="164.66" y="152.11" z="0.00" zorder="0" />
+        <keypoint name="R_Ankle" visible="1" x="540.86" y="300.77" z="385.37" zorder="0" />
+        <keypoint name="R_Ear" visible="1" x="131.00" y="188.00" z="0.00" zorder="0" />
+        <keypoint name="R_Elbow" visible="1" x="244.00" y="150.00" z="69.03" zorder="0" />
+        <keypoint name="R_Eye" visible="1" x="145.44" y="154.14" z="0.00" zorder="0" />
+        <keypoint name="R_Hip" visible="1" x="338.60" y="298.75" z="244.66" zorder="0" />
+        <keypoint name="R_Knee" visible="1" x="475.00" y="175.00" z="289.75" zorder="0" />
+        <keypoint name="R_Shoulder" visible="1" x="175.78" y="230.99" z="0.00" zorder="0" />
+        <keypoint name="R_Wrist" visible="1" x="175.78" y="170.32" z="147.57" zorder="0" />
+    </keypoints>
+</annotation>
