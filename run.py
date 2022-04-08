@@ -1,7 +1,7 @@
 
 from app import app
 #from flask import jsonify, request,render_template
-from views import database, keypoint,file
+from views import database, keypoint,file, video
 
 
 
