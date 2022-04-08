@@ -4,7 +4,7 @@ import os
 import glob
 import csv
 import xml.etree.ElementTree as ET
-from models import db_file,db_sport
+from models import db_file
 from typing import List
 from app import app
 from flask import jsonify, request, render_template
@@ -161,8 +161,6 @@ def get_dir_tree():
         resp['msg'] = '失败'
     return json.dumps(resp)
 
-
-
 @app.route('/getpath')
 async def get_filepath():
     userfile_title = ['userFileId','deleteBatchNum', ]
@@ -187,9 +185,6 @@ async def get_filepath():
     resp['success'] = True
     return resp
     return json.dumps(result)
-
-
-
 
 @app.route('/api/file/getfilelist', methods=['GET'])
 async def get_path():
@@ -223,7 +218,6 @@ async def get_path():
     except Exception as e:
         print(e)
 
-
 @app.route('/uploadfile', methods=['POST'])
 async def create_file():
     try:
@@ -255,7 +249,6 @@ async def create_file():
 
     except Exception as e:
         print(e)
-
 
 @app.route('/file/<path:localSystemFilePath>', methods=['PATCH'])
 async def edit_file(localSystemFilePath):

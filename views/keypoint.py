@@ -2,7 +2,7 @@ import os
 import glob
 import csv
 import xml.etree.ElementTree as ET
-from models import db_sport, db_file
+from models import db_file
 from app import app
 from flask import jsonify, request
 import json
@@ -115,8 +115,8 @@ def get_labelimage():
     plt.axis('off')
     plt.imshow(I)
     plt.show()
-    data = get_point(xmlpath)
-    #data = get_db_point(userFileId)
+    #data = get_point(xmlpath)
+    data = get_db_point(userFileId)
     keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
     point_x = []
@@ -145,13 +145,21 @@ def get_labelimage():
     plt.close()
     #if isMin:
     #    plt.thumbnail((150,150))
-    data = base64.encodebytes(sio.getvalue()).decode()
+    data = {}
+    image = base64.encodebytes(sio.getvalue()).decode()
+    sql = '''select label.status as status from ai_label_skeleton as label,
+     ai_image as image where image.file_id={} and image.img_id = label.img_id'''.format(userFileId)
+    result = db_file(sql)
+    status = result[0]['status']
+    data['image'] = image
+    data['status'] = status
+    #return image
     return data
 
 @app.route('/123')
 def xmlsave():
     n = 0
-    sql = "select filePath, fileName from userfile where extendName='xml' and filePath like '%/label_data/info/'"
+    sql = "select filePath, fileName from userfile where extendName='xml' and filePath like '%/label_data/info/' and userFileId>293751"
     result = db_file(sql)
     for res in result:
         path = res['filePath'][:-5] + 'images/'
@@ -192,7 +200,7 @@ def get_label_info():
 @app.route('/file/set_label_status', methods=['POST'])
 def set_label_status():
     status = request.form['status']
-    files = request.form['files']
+    files = request.form['userFileIds']
     status = int(status)
     resp = {}
     resp['code'] = 0
@@ -216,15 +224,3 @@ def set_label_status():
         resp['code'] = 1
         resp['msg'] = 'files error'
     return json.dumps(resp)
-
-
-
-
-
-
-
-
-
-
-
-
