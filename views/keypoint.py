@@ -67,7 +67,10 @@ def create_point(xml_path, img_id, person_id):
 
 def get_db_point(userFileId):
     sql = '''select * from ai_image as img,ai_label_skeleton as label where img.file_id = {} and img.img_id = label.img_id'''.format(userFileId)
-    result = db_file(sql)[0]
+    result = db_file(sql)
+    if not result:
+        return None
+    result = result[0]
     person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
     data = {}
@@ -117,6 +120,18 @@ def get_labelimage():
     plt.show()
     #data = get_point(xmlpath)
     data = get_db_point(userFileId)
+    if not data:
+        sio = BytesIO()
+        plt.savefig(sio, format='png')
+        plt.clf()
+        plt.close()
+        #if isMin:
+        #    plt.thumbnail((150,150))
+        data = {}
+        image = base64.encodebytes(sio.getvalue()).decode()
+        data['image'] = image
+        data['status'] = 0
+        return data
     keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
     point_x = []
@@ -156,7 +171,6 @@ def get_labelimage():
     #return image
     return data
 
-@app.route('/123')
 def xmlsave():
     n = 0
     sql = "select filePath, fileName from userfile where extendName='xml' and filePath like '%/label_data/info/' and userFileId>293751"
