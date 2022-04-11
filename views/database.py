@@ -1,11 +1,11 @@
-import aiofiles
+#import aiofiles
 import asyncio
 import os
 import glob
 import csv
 import numpy as np
 import xml.etree.ElementTree as ET
-from models import db_file
+from model import db_file
 from typing import List
 from app import app
 from flask import jsonify, request,render_template
@@ -14,7 +14,9 @@ from config import DIR
 import hashlib
 
 def get_image_path(userFileId):
+    # 获取图片真实路径
     sql = '''select filePath, fileName, extendName from userfile where userFileId = {}'''.format(userFileId)
+    print(sql)
     result = db_file(sql)
     for res in result:
         path = res['filePath'] + res['fileName'] + '.' + res['extendName']
@@ -22,6 +24,7 @@ def get_image_path(userFileId):
 
 
 def get_file_md5(filename):
+    # 路径加密
     if not os.path.isfile(filename):
         return
     myhash = hashlib.md5()
@@ -39,6 +42,7 @@ def image_save(fileid, height, width):
     db_file(sql)
 
 def insert_file(filepath, filename, ext):
+    # 插入文件
     fileUrl = '%s%s.%s' % (filepath, filename,ext)
     identifier = get_file_md5(DIR+fileUrl)
     file_stats = os.stat(DIR+fileUrl)
@@ -59,6 +63,7 @@ def insert_file(filepath, filename, ext):
         image_save(fileid, height, width)
 
 def insert_folder(filepath,filename):
+    # 插入文件夹
     sql = '''insert into userfile set deleteFlag=0, fileName='{}', filePath='{}',
         isDir=1,userId=3, uploadTime=now()'''.format(filename,filepath)
     db_file(sql)

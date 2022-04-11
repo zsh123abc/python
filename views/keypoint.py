@@ -2,7 +2,7 @@ import os
 import glob
 import csv
 import xml.etree.ElementTree as ET
-from models import db_file
+from model import db_file 
 from app import app
 from flask import jsonify, request
 import json
@@ -14,6 +14,7 @@ from io import BytesIO
 import base64
 import time
 import skimage.io as io
+import asyncio
 
 #@app.route('/point/<path:localSystemFilePath>', methods=['GET'])
 def get_point(xmlpath):
@@ -87,24 +88,19 @@ def get_db_point(userFileId):
     return data
 
 @app.route('/get_labelimage', methods = ['GET'])
-def get_labelimage():
+async def get_labelimage():
     isMin = request.values.get('isMin')
     userFileId = request.values.get('userFileId')
+    if not db_file('''select * from ai_image where file_id = {}'''.format(userFileId)):
+        return '1'
     filepath = db.get_image_path(userFileId)
+    filelist = filepath.split('/')
     os.chdir(DIR)
     userList = filepath.split('/')
     userList[-2] = 'info'
     userList[-1] = userList[-1].split('.')[0] + '_0.xml'
     imgpath = DIR + filepath
     xmlpath = DIR + '/'.join(userList)
-    # display COCO categories and supercategories
-    #cats = coco.loadCats(coco.getCatIds())
-    #nms = [cat['name'] for cat in cats]
-    #print('COCO categories: \n{}\n'.format(' '.join(nms)))
-    #nms = set([cat['supercategory'] for cat in cats])
-    #print('COCO supercategories: \n{}'.format(' '.join(nms)))
-    #imgIds = coco.getImgIds()  # list
-    #return json.dumps(imgIds)
     
     linewidth = 5
     size = 12
@@ -114,23 +110,40 @@ def get_labelimage():
         size = 3
     else:
         plt.rcParams['figure.figsize'] = (8.0, 10.0)
-    I = io.imread(imgpath)
-    plt.axis('off')
-    plt.imshow(I)
-    plt.show()
+    
+    data = {}
+    data['code'] = 1
+    data['msg'] = '打开文件失败'
+    try:
+        I = io.imread(imgpath)
+        plt.axis('off')
+        plt.imshow(I)
+        plt.show()
+    except Exception as e:
+        data['msg'] = e
+        return data
     #data = get_point(xmlpath)
+    
+    if len(filelist)<3 or filelist[-2]!='images' or filelist[-3]!='label_data' or isMin not in ('true','false'):
+        data = {}
+        image = base64.encodebytes(sio.getvalue()).decode()
+        data['image'] = image
+        data['status'] = 0
+        data['code'] = 1
+        data['msg'] = '文件非图片或请求参数错误'
+        return data
     data = get_db_point(userFileId)
     if not data:
         sio = BytesIO()
         plt.savefig(sio, format='png')
         plt.clf()
         plt.close()
-        #if isMin:
-        #    plt.thumbnail((150,150))
         data = {}
         image = base64.encodebytes(sio.getvalue()).decode()
         data['image'] = image
         data['status'] = 0
+        data['code'] = 1
+        data['msg'] = "没有标注文件"
         return data
     keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
@@ -156,18 +169,21 @@ def get_labelimage():
     plt.show()
     sio = BytesIO()
     plt.savefig(sio, format='png')
-    plt.clf()
-    plt.close()
-    #if isMin:
-    #    plt.thumbnail((150,150))
-    data = {}
-    image = base64.encodebytes(sio.getvalue()).decode()
-    sql = '''select label.status as status from ai_label_skeleton as label,
-     ai_image as image where image.file_id={} and image.img_id = label.img_id'''.format(userFileId)
-    result = db_file(sql)
-    status = result[0]['status']
-    data['image'] = image
-    data['status'] = status
+    try:
+        plt.clf()
+        plt.close()
+        data = {}
+        image = base64.encodebytes(sio.getvalue()).decode()
+        sql = '''select label.status as status from ai_label_skeleton as label,
+        ai_image as image where image.file_id={} and image.img_id = label.img_id'''.format(userFileId)
+        result = db_file(sql)
+        status = result[0]['status']
+        data['image'] = image
+        data['status'] = status
+        data['code'] = 0
+        data['msg'] = '成功'
+    except Exception as e:
+        data['msg'] = str(e)
     #return image
     return data
 

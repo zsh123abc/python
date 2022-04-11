@@ -15,7 +15,7 @@ def get_frame_name(outPutDir, videoName, times):
     filename = outPutDir + videoName + times + '.jpg'
     return [filename,videoName+times]
 
-def get_frame(videoPath, videoName, outPutDir, fileurl):
+def get_frame(videoPath, videoName, outPutDir, fileurl, frame_cnt):
     #要提取视频的文件名，隐藏后缀 
     sourceFileName=videoName
     #在这里把后缀接上 
@@ -32,7 +32,12 @@ def get_frame(videoPath, videoName, outPutDir, fileurl):
     camera = cv2.VideoCapture(fileurl) 
     fps = camera.get(cv2.CAP_PROP_FPS)
     #提取视频的频率，每50帧提取一个 
-    frameFrequency=fps
+    if frame_cnt:
+        frameFrequency=int(frame_cnt)
+    else:
+        frameFrequency=fps
+    print(frameFrequency)
+    print(frame_cnt)
     while True:     
         times+=1     
         res, image = camera.read()     
@@ -84,6 +89,9 @@ def get_video_frame():
     resp['code'] = 0
     resp['msg'] = 'ok'
     userFileIds = request.form['userFileIds']
+    frame_cnt = ''
+    if 'frame_cnt' in request.form:
+        frame_cnt = request.form['frame_cnt']
     print(userFileIds)
     video_info = get_video_info(userFileIds)
     if video_info == 0:
@@ -111,6 +119,6 @@ def get_video_frame():
         sql = '''select fileUrl from file where fileId={}'''.format(fileid)
         fileurl = db_file(sql)[0]['fileUrl']
         fileurl = DIR + '/' + fileurl
-        get_frame(videopath, video, outPutDir, fileurl)
+        get_frame(videopath, video, outPutDir, fileurl, frame_cnt)
     return resp
 

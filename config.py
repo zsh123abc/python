@@ -32,4 +32,4 @@ config = {
     'default': DevelopmentConfig
 }
 
-DIR = '/data/dataset/yd_pose'
+DIR = '/data/dataset'

@@ -9,14 +9,10 @@
 <body>
     
 
-    <form action="/uploadfile" method="POST">
-        <input type="text" name="filepath">
-        <input type="text" name ='filename'>
-        <input type="file" name="files">
+    <form action="/papi/upload_label_file" method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="file">
         <input type="submit" value="tijiao">
-    </form>
-    <form action="/point/1310013_0.xml" method="get">
-        <input type="submit" value="ddddd">
     </form>
 
 </body>
