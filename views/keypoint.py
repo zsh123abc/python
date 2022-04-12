@@ -15,9 +15,11 @@ import base64
 import time
 import skimage.io as io
 import asyncio
+import cv2
 
 #@app.route('/point/<path:localSystemFilePath>', methods=['GET'])
 def get_point(xmlpath):
+    # xmlpath为上传的文件或文件路径，返回骨骼点
     tree = ET.parse(xmlpath)
     root = tree.getroot()
     person = {}
@@ -33,9 +35,7 @@ def get_point(xmlpath):
                 person["keypoints"][name] = child.attrib
     return person
 
-#@app.route('/createpoint/<path:localSystemFilePath>', methods=['GET'])
-def create_point(xml_path, img_id, person_id):
-    person = get_point(xml_path)
+def get_dbtype_point(person):
     person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
     keypoint = []
@@ -44,13 +44,19 @@ def create_point(xml_path, img_id, person_id):
         for item in ['x','y','z','zorder','visible']:
             s = '%s%d=%s'%(item, idx, person['keypoints'][key][item])
             keypoint.append(s)
+    return keypoint
+
+#@app.route('/createpoint/<path:localSystemFilePath>', methods=['GET'])
+def create_point(person, img_id, person_id):
+    keypoint = get_dbtype_point(person)
     person_id = int(person_id)
     img_id = int(img_id)
     status = 0
     sql = '''insert into ai_label_skeleton set person_id=%d,img_id=%d,status=%d,%s'''%(person_id, img_id, status, ','.join(keypoint))
     db_file(sql)
-    sql = '''select max(label_id) as id from ai_label_skeleton'''
-    label_id = db_file(sql)[0]['id']
+    #sql = '''select max(label_id) as id from ai_label_skeleton'''
+    sql = '''select label_id from ai_label_skeleton where img_id={}'''.format(img_id)
+    label_id = db_file(sql)[0]['label_id']
     try:
         tag = person['subcategory']
         sql = '''select tag_id from ai_tag where tag="{}"'''.format(tag)
@@ -80,77 +86,93 @@ def get_db_point(userFileId):
         keypoints[person_keys[i]] = {}
         keypoints[person_keys[i]]['x'] = result['x'+str(i+1)]
         keypoints[person_keys[i]]['y'] = result['y'+str(i+1)]
-        keypoints[person_keys[i]]['z'] = result['z'+str(i+1)]
-        keypoints[person_keys[i]]['zorder'] = result['zorder'+str(i+1)]
+        #keypoints[person_keys[i]]['z'] = result['z'+str(i+1)]
+        #keypoints[person_keys[i]]['zorder'] = result['zorder'+str(i+1)]
         keypoints[person_keys[i]]['visible'] = result['visible'+str(i+1)]
     data['person_id'] = result['person_id']
     data['keypoints'] = keypoints
     return data
 
+def get_label_status(userFileId):
+    sql = '''select label.status as status from ai_label_skeleton as label,
+        ai_image as image where image.file_id={} and image.img_id = label.img_id limit 1'''.format(userFileId)
+    result = db_file(sql)
+    resp = {}
+    if result:
+        status = result[0]['status']
+        resp['status'] = status
+        resp['code'] = 0
+        resp['msg'] = '成功'
+    else:
+        resp['code'] = 1
+        resp['msg'] = '没有标注数据'
+    return resp
+
 @app.route('/get_labelimage', methods = ['GET'])
-async def get_labelimage():
+def get_labelimage():
+    time1 = time.time()
     isMin = request.values.get('isMin')
     userFileId = request.values.get('userFileId')
-    if not db_file('''select * from ai_image where file_id = {}'''.format(userFileId)):
-        return '1'
+    if not db_file('''select * from ai_image where file_id = {} limit 1'''.format(userFileId)):
+        data = {}
+        data['code'] = 1
+        data['msg'] = '标注文件不存在'
+        return json.dumps(data)
     filepath = db.get_image_path(userFileId)
     filelist = filepath.split('/')
-    os.chdir(DIR)
-    userList = filepath.split('/')
-    userList[-2] = 'info'
-    userList[-1] = userList[-1].split('.')[0] + '_0.xml'
+    #os.chdir(DIR)
     imgpath = DIR + filepath
-    xmlpath = DIR + '/'.join(userList)
-    
-    linewidth = 5
-    size = 12
-    if isMin == 'true':
-        plt.rcParams['figure.figsize'] = (1.5, 1.5)
-        linewidth = 2
-        size = 3
-    else:
-        plt.rcParams['figure.figsize'] = (8.0, 10.0)
-    
+    # linewidth = 5
+    # size = 12
+    # if isMin == 'true':
+    #     plt.rcParams['figure.figsize'] = (1.5, 1.5)
+    #     linewidth = 2
+    #     size = 3
+    # else:
+    #     plt.rcParams['figure.figsize'] = (8.0, 10.0)
+    # plt.axis('off')
     data = {}
     data['code'] = 1
     data['msg'] = '打开文件失败'
-    try:
-        I = io.imread(imgpath)
-        plt.axis('off')
-        plt.imshow(I)
-        plt.show()
-    except Exception as e:
-        data['msg'] = e
-        return data
     #data = get_point(xmlpath)
-    
+    #I = io.imread(imgpath)
+    #I = plt.imread(imgpath)
+    # while(0):
+    #     try:
+    #         plt.imshow(I)
+    #         break
+    #     except:
+    #         time.sleep(0.5)
+    # plt.imshow(I)
+    #plt.show()
     if len(filelist)<3 or filelist[-2]!='images' or filelist[-3]!='label_data' or isMin not in ('true','false'):
         data = {}
-        image = base64.encodebytes(sio.getvalue()).decode()
-        data['image'] = image
+        #image = base64.encodebytes(sio.getvalue()).decode()
+        #data['image'] = image
         data['status'] = 0
         data['code'] = 1
         data['msg'] = '文件非图片或请求参数错误'
         return data
     data = get_db_point(userFileId)
     if not data:
-        sio = BytesIO()
-        plt.savefig(sio, format='png')
-        plt.clf()
-        plt.close()
+        #sio = BytesIO()
+        #plt.savefig(sio, format='png')
+        #plt.clf()
+        #plt.close()
         data = {}
-        image = base64.encodebytes(sio.getvalue()).decode()
-        data['image'] = image
-        data['status'] = 0
+        #image = base64.encodebytes(sio.getvalue()).decode()
+        #data['image'] = image
+        #data['status'] = 0
         data['code'] = 1
         data['msg'] = "没有标注文件"
         return data
+    
     keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
     point_x = []
     point_y = []
     point_v = []
-    lines = [[0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],[8,10],[9,11],[10,12],[11,13]]
+    lines = [[0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],[8,10],[9,11],[10,12],[11,13],[2,8],[3,9],[8,9]]
     for key in keys:
         if key in data['keypoints']:
             if key in ['Nose','L_Ear','L_Eye','R_Eye','R_Ear']:
@@ -158,38 +180,97 @@ async def get_labelimage():
             point_x.append(float(data['keypoints'][key]['x']))
             point_y.append(float(data['keypoints'][key]['y']))
             point_v.append(int(data['keypoints'][key]['visible']))
+    # for line in lines:
+    #     point1,point2 = line
+    #     x1 = point_x[point1]
+    #     x2 = point_x[point2]
+    #     y1 = point_y[point1]
+    #     y2 = point_y[point2]
+    #     plt.plot([x1,x2],[y1,y2], linewidth=linewidth, color='black')
+    
+    # plt.plot(point_x,point_y,'.',markersize=size)
+    #plt.show()
+    
+    '''
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    cv2处理图片
+    '''
+    img = cv2.imread(imgpath)
+
+    
     for line in lines:
         point1,point2 = line
         x1 = point_x[point1]
         x2 = point_x[point2]
         y1 = point_y[point1]
         y2 = point_y[point2]
-        plt.plot([x1,x2],[y1,y2], linewidth=linewidth, color='black')
-    plt.plot(point_x,point_y,'.',markersize=size)
-    plt.show()
-    sio = BytesIO()
-    plt.savefig(sio, format='png')
-    try:
-        plt.clf()
-        plt.close()
-        data = {}
-        image = base64.encodebytes(sio.getvalue()).decode()
-        sql = '''select label.status as status from ai_label_skeleton as label,
-        ai_image as image where image.file_id={} and image.img_id = label.img_id'''.format(userFileId)
-        result = db_file(sql)
-        status = result[0]['status']
-        data['image'] = image
-        data['status'] = status
-        data['code'] = 0
-        data['msg'] = '成功'
-    except Exception as e:
-        data['msg'] = str(e)
-    #return image
-    return data
+        start_point = (int(x1), int(y1))
+        end_point = (int(x2), int(y2))
+        if start_point == (0,0) or end_point == (0,0):
+            continue
+        if point_v[point1] and point_v[point2]:
+            cv2.line(img, start_point, end_point, (0,255,0), 3)
+    for i in range(14):
+        if point_v[i]:
+            cv2.circle(img,(int(point_x[i]),int(point_y[i])),3,(255,0,0),3)
+    if isMin == 'true':
+        img = cv2.resize(img, (150,150))
+        image = cv2.imencode('.jpeg',img)[1]
+        src = 'data:image/jpeg;base64,'
+
+    else:
+        img = cv2.resize(img, (450,450))
+        image = cv2.imencode('.jpg',img)[1]
+        src = 'data:image/jpg;base64,'
+    image = str(base64.b64encode(image))[2:-1]
+
+    image = src + image
+    resp = get_label_status(userFileId)
+    resp['image'] = image
+    return resp
+    '''
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    '''
+
+
+    # sio = BytesIO()
+    # if isMin == 'true':
+    #     plt.savefig(sio, format='jpeg')
+    #     src = 'data:image/jpeg;base64,'
+    # else:
+    #     plt.savefig(sio, format='png')
+    #     src = 'data:image/png;base64,'
+    # plt.clf()
+    # plt.close() 
+    # resp = {}  
+    
+    # try:     
+    #     image = base64.encodebytes(sio.getvalue()).decode()
+    #     #print(1)
+    #     #print(image)
+        
+    #     sql = '''select label.status as status from ai_label_skeleton as label,
+    #     ai_image as image where image.file_id={} and image.img_id = label.img_id limit 1'''.format(userFileId)
+    #     result = db_file(sql)
+    #     time2 = time.time()
+    #     print(time2-time1)
+    #     #print(result)
+    #     status = result[0]['status']
+    #     resp['image'] = '<img src="%s"/>' % (src + image)
+    #     resp['status'] = status
+    #     resp['code'] = 0
+    #     resp['msg'] = '成功'
+    #     #print(resp)
+    # except Exception as e:
+    #     resp['code'] = 1
+    #     resp['msg'] = str(e)
+    #     #print(e)
+    # return resp['image']
+    # return resp
 
 def xmlsave():
     n = 0
-    sql = "select filePath, fileName from userfile where extendName='xml' and filePath like '%/label_data/info/' and userFileId>293751"
+    sql = "select filePath, fileName from userfile where extendName='xml' and filePath like '%/label_data/info/'"
     result = db_file(sql)
     for res in result:
         path = res['filePath'][:-5] + 'images/'
@@ -250,6 +331,7 @@ def set_label_status():
         sql = '''update ai_label_skeleton set status={} where img_id in ({})'''.format(status, img_ids)
         print(sql)
         db_file(sql)
+        
     except:
         resp['code'] = 1
         resp['msg'] = 'files error'

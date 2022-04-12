@@ -15,8 +15,7 @@ import hashlib
 
 def get_image_path(userFileId):
     # 获取图片真实路径
-    sql = '''select filePath, fileName, extendName from userfile where userFileId = {}'''.format(userFileId)
-    print(sql)
+    sql = '''select filePath, fileName, extendName from userfile where userFileId = {} limit 1'''.format(userFileId)
     result = db_file(sql)
     for res in result:
         path = res['filePath'] + res['fileName'] + '.' + res['extendName']

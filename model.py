@@ -18,12 +18,13 @@ class pools():
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute(sql)
         result = cur.fetchall()
+        conn.commit()
         cur.close()
         conn.close()
         return result
 
     def mysql_connection(self):
-        maxconnections = 50
+        maxconnections = 20
         pool = PooledDB(
             pymysql,
             maxconnections,
@@ -47,5 +48,5 @@ class pools():
         return result
 
 def db_file(sql):
-    pool = pools()
+    from app import pool
     return pool.sqlquery(sql)
