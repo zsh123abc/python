@@ -5,9 +5,14 @@ import xml.etree.ElementTree as ET
 from model import db_file
 from typing import List
 from app import app
-from flask import jsonify, request, render_template
+from flask import jsonify, request, render_template, make_response, send_from_directory
 import json
 from .keypoint import get_point,get_dbtype_point,create_point
+import zipfile
+import xml.dom.minidom
+from config import DIR
+import time
+import base64
 
 @app.route('/getdirtree')
 def get_dir_tree():
@@ -42,11 +47,264 @@ def create_label(filePath, userFileId, person_id, person):
     print(id)
     create_point(person, id, person_id)
 
+def get_db_points(userFileIds):
+    sql = '''select * from ai_image as img,ai_label_skeleton as label where img.file_id in ({}) and img.img_id = label.img_id'''.format(userFileIds)
+    result = db_file(sql)
+    if not result:
+        return None
+    person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
+        'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
+    resp = []
+    for res in result:
+        sql = '''select fileName from userfile where userFileId={}'''.format(res['file_id'])
+        img = db_file(sql)[0]['fileName']
+        data = {}
+        keypoints = {}
+        for i in range(19):
+            keypoints[person_keys[i]] = {}
+            keypoints[person_keys[i]]['x'] = res['x'+str(i+1)]
+            keypoints[person_keys[i]]['y'] = res['y'+str(i+1)]
+            keypoints[person_keys[i]]['z'] = res['z'+str(i+1)]
+            keypoints[person_keys[i]]['zorder'] = res['zorder'+str(i+1)]
+            keypoints[person_keys[i]]['visible'] = res['visible'+str(i+1)]
+        data['person_id'] = res['person_id']
+        data['image'] = img
+        data['keypoints'] = keypoints
+        resp.append(data)
+    return resp
+
+def get_xml_file(person):
+    filepath = DIR+'/yd_pose/test/test.zip'
+    f = zipfile.ZipFile(filepath,'w',zipfile.ZIP_STORED)
+    paths = []
+    names = []
+    for item in person:
+        #在内存中创建一个空的文档
+        doc = xml.dom.minidom.Document() 
+        #创建一个根节点Managers对象
+        root = doc.createElement('annotation')
+        #将根节点添加到文档对象中
+        doc.appendChild(root) 
+        nodeimage = doc.createElement('image')
+        nodecategory = doc.createElement('category')
+        nodesubcategory = doc.createElement('subcategory')
+        nodekeypoints = doc.createElement('keypoints')
+        nodeimage.appendChild(doc.createTextNode(item['image']))
+        nodecategory.appendChild(doc.createTextNode('person'))
+        nodesubcategory.appendChild(doc.createTextNode('male'))
+
+        items = item['keypoints']
+        for name in item['keypoints']:
+            if items[name]['x'] == items[name]['y'] == items[name]['z'] == 0:
+                continue
+            nodekeypoint = doc.createElement('keypoint')
+            #设置根节点的属性
+            nodekeypoint.setAttribute('name', name)
+            nodekeypoint.setAttribute('zorder', str(items[name]['zorder'])) 
+            nodekeypoint.setAttribute('x', str(items[name]['x'])) 
+            nodekeypoint.setAttribute('y', str(items[name]['y'])) 
+            nodekeypoint.setAttribute('z', str(items[name]['z'])) 
+            nodekeypoint.setAttribute('visible', str(items[name]['visible'])) 
+            nodekeypoints.appendChild(nodekeypoint)
+
+        root.appendChild(nodeimage)
+        root.appendChild(nodecategory)
+        root.appendChild(nodesubcategory)
+        root.appendChild(nodekeypoints)
+        path = DIR + '/yd_pose/test/' + str(item['image']) + '.xml'
+        fp = open(path, 'w')
+        print(path)
+        doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
+        paths.append(path)
+        names.append(str(item['image'])+'.xml')  
+        fp.close()
+        
+
+    for i in range(len(paths)):
+        print(paths[i])
+        print(names[i])
+        f.write(paths[i],'/' + names[i])
+        #os.remove(paths[i])
+        
+    #f.write(DIR+'/yd_pose/test/test.txt','/test.txt')    
+    f.close()
+    return [DIR+'/yd_pose/test/', 'test.zip']
+    #os.remove(DIR+'/yd_pose/test/test.zip')
+    # with open(DIR+'/yd_pose/test/test.zip','rb') as f1:
+    #     base64_str = base64.b64encode(f1.read())
+    # return base64_str
+    
+def get_image_wh(userFileId):
+    sql = '''select imageHeight,imageWidth from userfile,image where userfile.userFileId={} and userfile.fileId=image.fileId'''.format(userFileId)
+    res = db_file(sql)
+    return (res[0]['imageHeight'], res[0]['imageWidth'])
+
+
+def get_coco_file(userFileIds,person):
+    # 生成coco文件
+    db_type = 'push-up-1'
+    userFileIds = userFileIds.split(',')
+    save_path = DIR + '/annotations/'
+    respath = save_path
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+    save_path = os.path.join(save_path, db_type + '.json')
+    resname = db_type + '.json'
+    joint_num = 17
+    aid = 0
+    # coco文件格式
+    coco = {'images':[], 'categories':[], 'annotations':[]}
+    # category格式
+    category = {'supercategory':'person',
+        'id':1,
+        'name':'person',
+        #"skeleton": [[16,14],[14,12],[17,15],[15,13],[12,13],[6,12],[7,13],[6,7],[6,8],[7,9],[8,10],[9,11],[2,3],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7]],
+        #"keypoints": ["nose","left_eye","right_eye","left_ear","right_ear","left_shoulder","right_shoulder","left_elbow","right_elbow",
+        #    "left_wrist","right_wrist","left_hip","right_hip","left_knee","right_knee","left_ankle","right_ankle"]
+        'keypoints':['body_head','neck','left_shoulder','right_shoulder','left_elbow','right_elbow','left_wrist','right_wrist','left_hip',
+        'right_hip','left_knee','right_knee','left_ankle','right_ankle','nose','left_ear','left_eye','right_eye','right_ear'],
+        'skeleton':[[0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],[8,10],[9,11],[10,12],[11,13],[2,8],[3,9],[8,9],[1,14],[14,16],[16,15],[14,17],[17,18]]
+        }
+    for item in person:
+        filename = str(item['image']) + '.jpg'
+        filepath = db_type + '/images/'
+        # 获取图片高和宽
+        h, w = get_image_wh(userFileIds[aid])
+        # images格式
+        img_dic = {'id': aid, 'file_name': filepath+filename, 'coco_url':'http://images.cocodataset.org/'+filepath+filename, 'width': w, 'height': h}
+        coco['images'].append(img_dic)
+        # 获取关键点数据和数量
+        kps = []
+        numkeypoints = 0
+        items = item['keypoints']
+        bbox = [0,0,0,0]
+        xmin = 0
+        ymin = 0
+        xmax = 0
+        ymax = 0
+        for keypoint in item['keypoints']:
+            x = items[keypoint]['x']
+            y = items[keypoint]['y']
+            v = 2 if items[keypoint]['visible'] else 1
+            if not (x == y == 0):
+                numkeypoints += 1
+                kps += [x,y,v]
+                if v > 0:
+                    if xmin > x or xmin == 0:
+                        xmin = x
+                    if xmax < x:
+                        xmax = x
+                    if ymin > y or ymin == 0:
+                        ymin = y
+                    if ymax < y:
+                        ymax = y
+        width = xmax - xmin + 1
+        height = ymax - ymin + 1
+        if width <= 0 or height <= 0:
+            continue
+        else:
+            if width > height:
+                if height/width < 0.15:
+                    height = width * 0.15
+            else:
+                if width/height < 0.15:
+                    width = height * 0.15
+            width_ratio = 1.3 if width > height else 1.5
+            height_ratio = 1.5 if width > height else 1.3
+            bbox[0] = (xmin + xmax)/2. - width/2*width_ratio
+            bbox[0] = max(bbox[0], 0)
+            bbox[1] = (ymin + ymax)/2. - height/2*height_ratio
+            bbox[1] = max(bbox[1], 0)
+            bbox[2] = width*width_ratio
+            if bbox[2] >= w - bbox[0]:
+                bbox[2] = w - bbox[0] - 1
+            bbox[3] = height*height_ratio
+            if bbox[3] >= h - bbox[1]:
+                bbox[3] = h - bbox[1] - 1
+
+        # annotations格式
+        person_dict = {'id':aid,'image_id':aid, 'category_id': 1, 'area': bbox[2]*bbox[3], 'bbox':bbox, 'iscrowd':0, 'keypoints': kps, 'numkeypoints': numkeypoints}
+        coco['annotations'].append(person_dict)
+        aid += 1
+    category['keypoints'] = category['keypoints'][:numkeypoints] if numkeypoints < 19 else category['keypoints']
+    category['skeleton'] = category['skeleton'][:numkeypoints] if numkeypoints < 19 else category['skeleton']
+    coco['categories'] = [category] 
+    with open(save_path, 'w') as f:
+        json.dump(coco, f)
+    return [respath, resname]        
+
+def get_custom_file():
+    output_file = DIR + '/annotations/custom.json'
+    input_file = DIR + '/annotations/push-up-1.json'
+    order_map = {0: 13, 1: 11, 2: 9, 3: 8, 4: 10, 5: 12, 6: 1, 7: 0, 8: 7, 9: 5, 10: 3, 11: 2, 12: 4, 13: 6}
+
+    with open(input_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    input_anno = data['annotations']
+    input_img = data['images']
+    print('annotations:', len(input_anno), 'images:', len(input_img))
+    dict_img = {}
+    for img in input_img:
+        dict_img[img['id']] = img['file_name']
+    res = []
+    for i in input_anno:
+        image = dict_img[i['image_id']]
+        ## 训练时会重新计算visibility，此处结果可不管
+        #visibility = [1 if j == 2 else 0 for j in i['keypoints'][2::3]]
+        #bbox = [i['bbox'][:2], i['bbox'][2:]]
+
+        points = []
+        for x, y, v in zip(i['keypoints'][0::3], i['keypoints'][1::3], i['keypoints'][2::3]):
+            if v != 0:
+                points.append([x, y])
+            else:
+                points.append([-1, -1])
+        #points = sorted([i for i in zip(order_map.values(), points)], key=lambda k: k[0])
+        #points = [i[1] for i in points]
+
+        # print({'image': image, 'points': points, 'visibility': visibility, 'bbox': bbox})
+        res.append({'image': image, 'points': points})
+    print('输出数量：', len(res))
+
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(res, f)
+    return 'custom.json'
+
+@app.route('/label_download')
 def label_download():
+    # 标注文件下载
     userFileIds = request.values.get('userFileIds')
     fileType = request.values.get('fileType')
+    resp = {}
+    resp['code'] = 1
+    resp['msg'] = '未知原因'
+    if fileType not in ['coco','xml','custom']:
+        resp['code'] = 1
+        resp['msg'] = '文件类型错误'
+    person = get_db_points(userFileIds)
+    idList = userFileIds.split(',')
+
+    if len(person) != len(idList):
+        resp['code'] = 1
+        resp['msg'] = '部分文件未存在标注文件'
     if fileType == 'xml':
-        get_xml_file(userFIleIds)
+        filepath = get_xml_file(person)
+        respath = filepath[0]
+        resname = filepath[1]
+    elif fileType == 'coco':
+        filepath = get_coco_file(userFileIds, person)
+        respath = filepath[0]
+        resname = filepath[1]
+    elif fileType == 'custom':
+        respath = get_coco_file(userFileIds, person)[0]
+        resname = get_custom_file()
+    #file = make_response(send_from_directory(respath, resname, as_attachment=True))
+    #resp['file'] = file
+    try:
+        return make_response(send_from_directory(respath, resname, as_attachment=True))
+    except:        
+        return json.dumps(resp)
 
 @app.route('/upload_label_file', methods=['GET','POST'])
 def uploadlabelfile():

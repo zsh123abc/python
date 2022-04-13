@@ -93,6 +93,8 @@ def get_db_point(userFileId):
     data['keypoints'] = keypoints
     return data
 
+
+
 def get_label_status(userFileId):
     sql = '''select label.status as status from ai_label_skeleton as label,
         ai_image as image where image.file_id={} and image.img_id = label.img_id limit 1'''.format(userFileId)

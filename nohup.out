@@ -8729,3 +8729,726 @@ select fileName,filePath,extendName,fileId from userfile where userFileId in (10
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 155-162-337
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://172.20.0.3:8080/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:02:40] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:04:00] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:05:26] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987129%2C987130&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:09:03] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987129%2C987130&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:14:26] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:14:54] "GET /label_download?userFileIds=37485%2C39476%2C987132%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:15:07] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:16:52] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:21:40] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 279, in label_download
+    get_xml_file(person)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 120, in get_xml_file
+    import rarfile
+ModuleNotFoundError: No module named 'rarfile'
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:23:52] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:28:46] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:30:01] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:31:18] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:32:01] "GET /label_download?userFileIds=37485%2C39476%2C987131%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:33:03] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=coco HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:33:13] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=custom HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:33:19] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+annotations: 7 images: 7
+输出数量： 7
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:50:44] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=coco HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:51:18] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:51:58] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=coco HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:53:30] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=custom HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 11:53:54] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+annotations: 7 images: 7
+输出数量： 7
+/data/dataset/yd_pose/test/0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 11:55:21] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 286, in label_download
+    idList = userFileId.split(',')
+NameError: name 'userFileId' is not defined
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?__debugger__=yes&cmd=resource&f=style.css HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:04] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1535, in finalize_request
+    response = self.make_response(rv)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1713, in make_response
+    rv = jsonify(rv)
+  File "/usr/local/lib/python3.8/site-packages/flask/json/__init__.py", line 348, in jsonify
+    f"{dumps(data, indent=indent, separators=separators)}\n",
+  File "/usr/local/lib/python3.8/site-packages/flask/json/__init__.py", line 129, in dumps
+    rv = _json.dumps(obj, **kwargs)
+  File "/usr/local/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/local/lib/python3.8/json/encoder.py", line 201, in encode
+    chunks = list(chunks)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/local/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/usr/local/lib/python3.8/site-packages/flask/json/__init__.py", line 56, in default
+    return super().default(o)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Response is not JSON serializable
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?__debugger__=yes&cmd=resource&f=style.css HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:01:41] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 303, in label_download
+    return json.dumps(resp)
+  File "/usr/local/lib/python3.8/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Response is not JSON serializable
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?__debugger__=yes&cmd=resource&f=style.css HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:02:30] "GET /label_download?__debugger__=yes&cmd=resource&f=console.png HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:02:38] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:03:40] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=coco HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:03:48] "GET /label_download?userFileIds=35079%2C37485%2C39476%2C987132%2C987131%2C987130%2C987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:03:53] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:04:27] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 304, in label_download
+    return json.dumps(resp)
+  File "/usr/local/lib/python3.8/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Response is not JSON serializable
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:04:34] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:05:25] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 305, in label_download
+    return json.dumps(resp)
+  File "/usr/local/lib/python3.8/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Response is not JSON serializable
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:06:07] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 500 -
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/apps/flask/python_restful_file_system/views/file.py", line 303, in label_download
+    file = make_response(respath, resname, as_attachment=True)
+TypeError: make_response() got an unexpected keyword argument 'as_attachment'
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:06:30] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:07:54] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+ * Detected change in '/apps/flask/python_restful_file_system/views/file.py', reloading
+/data/dataset/yd_pose/test/0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+/data/dataset/yd_pose/test/0220099.xml
+0220099.xml
+/data/dataset/yd_pose/test/0160026.xml
+0160026.xml
+/data/dataset/yd_pose/test/0010696.xml
+0010696.xml
+/data/dataset/yd_pose/test/2070121.xml
+2070121.xml
+/data/dataset/yd_pose/test/0480256.xml
+0480256.xml
+/data/dataset/yd_pose/test/1480108.xml
+1480108.xml
+/data/dataset/yd_pose/test/1280050.xml
+1280050.xml
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [13/Apr/2022 12:27:24] "GET /label_download?userFileIds=35079,37485,39476,987132,987131,987130,987129&fileType=xml HTTP/1.0" 200 -
+172.20.0.6 - - [13/Apr/2022 12:27:31] "POST /label_download HTTP/1.0" 405 -
+172.20.0.6 - - [13/Apr/2022 12:27:37] "POST /label_download HTTP/1.0" 405 -
+172.20.0.6 - - [13/Apr/2022 12:27:50] "POST /label_download HTTP/1.0" 405 -
+172.20.0.6 - - [13/Apr/2022 12:27:56] "POST /label_download HTTP/1.0" 405 -
+172.20.0.6 - - [13/Apr/2022 12:27:59] "POST /label_download HTTP/1.0" 405 -
+172.20.0.6 - - [13/Apr/2022 12:28:34] "GET /label_download?userFileIds=35079&fileType=xml HTTP/1.0" 200 -
