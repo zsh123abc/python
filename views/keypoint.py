@@ -53,6 +53,7 @@ def create_point(person, img_id, person_id):
     img_id = int(img_id)
     status = 0
     sql = '''insert into ai_label_skeleton set person_id=%d,img_id=%d,status=%d,%s'''%(person_id, img_id, status, ','.join(keypoint))
+    print(sql)
     db_file(sql)
     #sql = '''select max(label_id) as id from ai_label_skeleton'''
     sql = '''select label_id from ai_label_skeleton where img_id={}'''.format(img_id)
@@ -93,7 +94,34 @@ def get_db_point(userFileId):
     data['keypoints'] = keypoints
     return data
 
-
+def get_db_points(userFileIds):
+    sql = '''select * from ai_image as img,ai_label_skeleton as label where img.file_id in ({}) and img.img_id = label.img_id'''.format(userFileIds)
+    result = db_file(sql)
+    if not result:
+        return None
+    person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
+        'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
+    resp = []
+    for res in result:
+        sql = '''select fileName,filePath from userfile where userFileId={}'''.format(res['file_id'])
+        img = db_file(sql)[0]['fileName']
+        filepath = db_file(sql)[0]['filePath']
+        data = {}
+        keypoints = {}
+        for i in range(19):
+            keypoints[person_keys[i]] = {}
+            keypoints[person_keys[i]]['x'] = res['x'+str(i+1)]
+            keypoints[person_keys[i]]['y'] = res['y'+str(i+1)]
+            keypoints[person_keys[i]]['z'] = res['z'+str(i+1)]
+            keypoints[person_keys[i]]['zorder'] = res['zorder'+str(i+1)]
+            keypoints[person_keys[i]]['visible'] = res['visible'+str(i+1)]
+        data['person_id'] = res['person_id']
+        data['image'] = img
+        data['keypoints'] = keypoints
+        data['filepath'] = filepath
+        data['label_id'] = res['label_id']
+        resp.append(data)
+    return resp
 
 def get_label_status(userFileId):
     sql = '''select label.status as status from ai_label_skeleton as label,
@@ -211,7 +239,7 @@ def get_labelimage():
         if start_point == (0,0) or end_point == (0,0):
             continue
         if point_v[point1] and point_v[point2]:
-            cv2.line(img, start_point, end_point, (0,255,0), 3)
+            cv2.line(img, start_point, end_point, (0,255,0), 5)
     for i in range(14):
         if point_v[i]:
             cv2.circle(img,(int(point_x[i]),int(point_y[i])),3,(255,0,0),3)

@@ -7,7 +7,7 @@ from typing import List
 from app import app
 from flask import jsonify, request, render_template, make_response, send_from_directory
 import json
-from .keypoint import get_point,get_dbtype_point,create_point
+from .keypoint import get_point,get_dbtype_point,create_point,get_db_points
 import zipfile
 import xml.dom.minidom
 from config import DIR
@@ -47,31 +47,14 @@ def create_label(filePath, userFileId, person_id, person):
     print(id)
     create_point(person, id, person_id)
 
-def get_db_points(userFileIds):
-    sql = '''select * from ai_image as img,ai_label_skeleton as label where img.file_id in ({}) and img.img_id = label.img_id'''.format(userFileIds)
+def get_label_tag(label_id):
+    sql = '''select ai_tag.tag as tag from ai_label_tag, ai_tag where ai_label_tag.tag_id = ai_tag.tag_id and ai_label_tag.label_id = {}'''.format(label_id)
+    print(sql)
     result = db_file(sql)
-    if not result:
-        return None
-    person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
-        'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
-    resp = []
-    for res in result:
-        sql = '''select fileName from userfile where userFileId={}'''.format(res['file_id'])
-        img = db_file(sql)[0]['fileName']
-        data = {}
-        keypoints = {}
-        for i in range(19):
-            keypoints[person_keys[i]] = {}
-            keypoints[person_keys[i]]['x'] = res['x'+str(i+1)]
-            keypoints[person_keys[i]]['y'] = res['y'+str(i+1)]
-            keypoints[person_keys[i]]['z'] = res['z'+str(i+1)]
-            keypoints[person_keys[i]]['zorder'] = res['zorder'+str(i+1)]
-            keypoints[person_keys[i]]['visible'] = res['visible'+str(i+1)]
-        data['person_id'] = res['person_id']
-        data['image'] = img
-        data['keypoints'] = keypoints
-        resp.append(data)
-    return resp
+    if result:
+        return result[0]['tag']
+    else:
+        return 'male'
 
 def get_xml_file(person):
     filepath = DIR+'/yd_pose/test/test.zip'
@@ -91,7 +74,9 @@ def get_xml_file(person):
         nodekeypoints = doc.createElement('keypoints')
         nodeimage.appendChild(doc.createTextNode(item['image']))
         nodecategory.appendChild(doc.createTextNode('person'))
-        nodesubcategory.appendChild(doc.createTextNode('male'))
+        label_id = item['label_id']
+        tag = get_label_tag(label_id)
+        nodesubcategory.appendChild(doc.createTextNode(tag))
 
         items = item['keypoints']
         for name in item['keypoints']:
@@ -124,7 +109,7 @@ def get_xml_file(person):
         print(paths[i])
         print(names[i])
         f.write(paths[i],'/' + names[i])
-        #os.remove(paths[i])
+        os.remove(paths[i])
         
     #f.write(DIR+'/yd_pose/test/test.txt','/test.txt')    
     f.close()
@@ -143,13 +128,16 @@ def get_image_wh(userFileId):
 def get_coco_file(userFileIds,person):
     # 生成coco文件
     db_type = 'push-up-1'
+    if person:
+        db_type = person[0]['filepath'][9:]
     userFileIds = userFileIds.split(',')
     save_path = DIR + '/annotations/'
     respath = save_path
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    save_path = os.path.join(save_path, db_type + '.json')
-    resname = db_type + '.json'
+    jsonname = db_type.split('/')[0]
+    save_path = os.path.join(save_path, jsonname + '.json')
+    resname = jsonname + '.json'
     joint_num = 17
     aid = 0
     # coco文件格式
@@ -167,7 +155,7 @@ def get_coco_file(userFileIds,person):
         }
     for item in person:
         filename = str(item['image']) + '.jpg'
-        filepath = db_type + '/images/'
+        filepath = db_type
         # 获取图片高和宽
         h, w = get_image_wh(userFileIds[aid])
         # images格式
@@ -226,16 +214,17 @@ def get_coco_file(userFileIds,person):
         person_dict = {'id':aid,'image_id':aid, 'category_id': 1, 'area': bbox[2]*bbox[3], 'bbox':bbox, 'iscrowd':0, 'keypoints': kps, 'numkeypoints': numkeypoints}
         coco['annotations'].append(person_dict)
         aid += 1
-    category['keypoints'] = category['keypoints'][:numkeypoints] if numkeypoints < 19 else category['keypoints']
-    category['skeleton'] = category['skeleton'][:numkeypoints] if numkeypoints < 19 else category['skeleton']
+    category['keypoints'] = category['keypoints']
+    category['skeleton'] = category['skeleton']
     coco['categories'] = [category] 
     with open(save_path, 'w') as f:
         json.dump(coco, f)
     return [respath, resname]        
 
-def get_custom_file():
-    output_file = DIR + '/annotations/custom.json'
-    input_file = DIR + '/annotations/push-up-1.json'
+def get_custom_file(cocopath):
+    output_name = '{}_custom.json'.format(cocopath[1][:-5])
+    output_file = DIR + '/annotations/' + output_name
+    input_file = DIR + '/annotations/' + cocopath[1]
     order_map = {0: 13, 1: 11, 2: 9, 3: 8, 4: 10, 5: 12, 6: 1, 7: 0, 8: 7, 9: 5, 10: 3, 11: 2, 12: 4, 13: 6}
 
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -260,6 +249,7 @@ def get_custom_file():
                 points.append([x, y])
             else:
                 points.append([-1, -1])
+        print(points)
         #points = sorted([i for i in zip(order_map.values(), points)], key=lambda k: k[0])
         #points = [i[1] for i in points]
 
@@ -269,7 +259,7 @@ def get_custom_file():
 
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(res, f)
-    return 'custom.json'
+    return output_name
 
 @app.route('/label_download')
 def label_download():
@@ -297,8 +287,9 @@ def label_download():
         respath = filepath[0]
         resname = filepath[1]
     elif fileType == 'custom':
-        respath = get_coco_file(userFileIds, person)[0]
-        resname = get_custom_file()
+        cocopath = get_coco_file(userFileIds, person)
+        resname = get_custom_file(cocopath)
+        respath = cocopath[0]
     #file = make_response(send_from_directory(respath, resname, as_attachment=True))
     #resp['file'] = file
     try:
@@ -343,14 +334,18 @@ def uploadlabelfile():
         else:
             resp['msg'] = '文件不存在'
             return resp
+        if not keypoint:
+            resp['msg'] = '失败'
+            return resp
         sql = 'update ai_label_skeleton set status=0,{} where img_id={}'.format(keypoint,img_id)
+        print(sql)
         db_file(sql)
         sql = 'select label_id from ai_label_skeleton where img_id={}'.format(img_id)
         result = db_file(sql)
-        label_id = result[0]['label_id']
-        sql = '''select * from ai_tag,ai_label_tag where ai_label_tag.label_id={} and ai_label_tag.tag_id=ai_tag.tag_id 
-            and tag_id.tag={}'''.format(label_id, person['subcategory'])
+        if result:
+            label_id = result[0]['label_id']
+            sql = '''select * from ai_tag,ai_label_tag where ai_label_tag.label_id={} and ai_label_tag.tag_id=ai_tag.tag_id 
+                and tag_id.tag={}'''.format(label_id, person['subcategory'])
         resp['code'] = 0
         resp['msg'] = '标注文件已更改'
         return resp
-
