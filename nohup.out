@@ -13051,3 +13051,28 @@ pymysql.err.ProgrammingError: (1064, "You have an error in your SQL syntax; chec
 172.20.0.6 - - [14/Apr/2022 12:32:54] "GET /get_labelimage?userFileId=1007053&isMin=false HTTP/1.0" 200 -
 172.20.0.6 - - [14/Apr/2022 12:32:56] "GET /get_labelimage?userFileId=1007053&isMin=false HTTP/1.0" 200 -
 172.20.0.6 - - [14/Apr/2022 12:32:56] "GET /get_labelimage?userFileId=1007060&isMin=false HTTP/1.0" 200 -
+2022-04-15 07:33:25.419261: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/lib/python3.8/site-packages/cv2/../../../../lib:
+2022-04-15 07:33:25.419317: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://172.20.0.3:8080/ (Press CTRL+C to quit)
+ * Restarting with stat
+2022-04-15 07:33:28.609972: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/lib/python3.8/site-packages/cv2/../../../../lib:/usr/local/lib/python3.8/site-packages/cv2/../../../../lib:
+2022-04-15 07:33:28.610035: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+ * Debugger is active!
+ * Debugger PIN: 155-162-337
+172.20.0.6 - - [15/Apr/2022 07:34:27] "GET /get_labelimage?userFileId=1006869&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:27] "GET /get_labelimage?userFileId=1006870&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:27] "GET /get_labelimage?userFileId=1006868&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:27] "GET /get_labelimage?userFileId=1006871&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006873&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006872&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006875&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006874&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006876&isMin=true HTTP/1.0" 200 -
+172.20.0.6 - - [15/Apr/2022 07:34:28] "GET /get_labelimage?userFileId=1006877&isMin=true HTTP/1.0" 200 -

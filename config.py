@@ -33,3 +33,4 @@ config = {
 }
 
 DIR = '/data/dataset'
+tflite_path = './model_float32.tflite'

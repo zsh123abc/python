@@ -344,7 +344,7 @@ def uploadlabelfile():
         result = db_file(sql)
         if result:
             label_id = result[0]['label_id']
-            sql = '''select * from ai_tag,ai_label_tag where ai_label_tag.label_id={} and ai_label_tag.tag_id=ai_tag.tag_id 
+            sql = '''select * from ai_tag,ai_label_tag where ai_label_tag.label_id={} and ai_label_tag.tag_id=ai_tag.tag_id
                 and tag_id.tag={}'''.format(label_id, person['subcategory'])
         resp['code'] = 0
         resp['msg'] = '标注文件已更改'

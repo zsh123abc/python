@@ -16,6 +16,7 @@ import time
 import skimage.io as io
 import asyncio
 import cv2
+from .ai_robot import convert
 
 #@app.route('/point/<path:localSystemFilePath>', methods=['GET'])
 def get_point(xmlpath):
@@ -366,3 +367,18 @@ def set_label_status():
         resp['code'] = 1
         resp['msg'] = 'files error'
     return json.dumps(resp)
+
+
+@app.route('/skeleton_calculate', methods=['GET'])
+def skeleton_calculate():
+    img_dir = request.values.get('img_dir')
+    userFileIds = request.values.get('userFileIds')
+    resp = {}
+    if not userFileIds or not img_dir or not os.path.isdir(DIR+img_dir):
+        resp['code'] = 1
+        resp['msg'] = '输入参数错误'
+        return resp
+    convert(img_dir, userFileIds)
+    resp['code'] = 0
+    resp['msg'] = '成功'
+    return resp
