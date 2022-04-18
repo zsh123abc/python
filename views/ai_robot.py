@@ -194,7 +194,7 @@ def getPersonKeypoints(name, results):
 
     return person
 
-def convert(img_dir, userFileIds, onnx_path=tflite_path):
+def convert(img_dir, userFileIds='', onnx_path=tflite_path):
     # yd pose keypoint order
     KP_Names = ['R_Ankle', 'R_Knee', 'R_Hip', 'L_Hip', 'L_Knee', 'L_Ankle', '', '', 'Neck', 'B_Head', 'R_Wrist',
                 'R_Elbow', 'R_Shoulder', 'L_Shoulder', 'L_Elbow', 'L_Wrist']                
@@ -203,7 +203,10 @@ def convert(img_dir, userFileIds, onnx_path=tflite_path):
     csv_output_rows = []
 
     p = PoseEstimator(model_path=onnx_path)
-    sql = '''select userFileId,fileName from userfile where filePath="{}" and userFileId in ({})'''.format(img_dir, userFileIds)
+    userfile_str = ''
+    if userFileIds:
+        userfile_str = 'and userFileId in ({})'.format(userFileIds)
+    sql = '''select userFileId,fileName from userfile where filePath="{}" and extendName="jpg" {}'''.format(img_dir, userfile_str)
     #print(sql)
     result = db_file(sql)
 

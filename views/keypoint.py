@@ -245,12 +245,26 @@ def get_labelimage():
         if point_v[i]:
             cv2.circle(img,(int(point_x[i]),int(point_y[i])),3,(255,0,0),3)
     if isMin == 'true':
-        img = cv2.resize(img, (150,150))
+        # 等比例裁剪成150*150
+        ori_h, ori_w, _ = img.shape
+        if ori_h<=ori_w:
+            h = 150
+            w = ori_w*150//ori_h
+            img = cv2.resize(img, (w, h))
+            t = (w-150)//2
+            img = img[0:150, t:w-t].copy()
+        else:
+            h = ori_h*150//ori_w
+            w = 150
+            img = cv2.resize(img, (w, h))
+            t = (h-150)//2
+            img = img[t:h-t,0:150].copy()
+        #img = cv2.resize(img, (150,150))
         image = cv2.imencode('.jpeg',img)[1]
         src = 'data:image/jpeg;base64,'
 
     else:
-        img = cv2.resize(img, (450,450))
+        #img = cv2.resize(img, (450,450))
         image = cv2.imencode('.jpg',img)[1]
         src = 'data:image/jpg;base64,'
     image = str(base64.b64encode(image))[2:-1]
