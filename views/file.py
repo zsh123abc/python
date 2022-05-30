@@ -19,8 +19,15 @@ def get_dir_tree():
     resp = {'code':0, 'msg': '成功'}
     try:
         filePath = request.values.get('filePath')
+        fileType = request.values.get('fileType')
+        if fileType == '1':
+            sql_str = ' and isDir = 1'
+        elif fileType == '2':
+            sql_str = ' and isDir = 0'
+        else:
+            sql_str = ''
         files = []
-        sql = """select isDir, fileName, extendName from userfile where filePath = '{}'""".format(filePath)
+        sql = """select isDir, fileName, extendName,userFileId from userfile where filePath = '{}' {}""".format(filePath,sql_str)
         print(sql)
         result = db_file(sql)
         print(result)
@@ -28,6 +35,7 @@ def get_dir_tree():
             item = {}
             item['isDir'] = res['isDir']
             item['filename'] = res['fileName']
+            item['userFileId'] = res['userFileId']
             if res['extendName']:
                 item['filename'] += '.' + res['extendName']
             files.append(item)

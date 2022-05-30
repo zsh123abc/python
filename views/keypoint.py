@@ -88,8 +88,8 @@ def get_db_point(userFileId):
         keypoints[person_keys[i]] = {}
         keypoints[person_keys[i]]['x'] = result['x'+str(i+1)]
         keypoints[person_keys[i]]['y'] = result['y'+str(i+1)]
-        #keypoints[person_keys[i]]['z'] = result['z'+str(i+1)]
-        #keypoints[person_keys[i]]['zorder'] = result['zorder'+str(i+1)]
+        keypoints[person_keys[i]]['z'] = result['z'+str(i+1)]
+        keypoints[person_keys[i]]['zorder'] = result['zorder'+str(i+1)]
         keypoints[person_keys[i]]['visible'] = result['visible'+str(i+1)]
     data['person_id'] = result['person_id']
     data['keypoints'] = keypoints
@@ -392,7 +392,9 @@ def skeleton_calculate():
         resp['code'] = 1
         resp['msg'] = '输入参数错误'
         return resp
-    convert(img_dir, userFileIds)
+    from file import client
+    #convert(img_dir, userFileIds)
+    client.skeleton_calculate(img_dir, userFileIds)
     resp['code'] = 0
     resp['msg'] = '成功'
     return resp
