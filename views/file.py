@@ -64,7 +64,7 @@ def get_label_tag(label_id):
     else:
         return 'male'
 
-def get_xml_file(person):
+def get_xml_file(zipFileCnt, person):
     filepath = DIR+'/yd_pose/test/test.zip'
     f = zipfile.ZipFile(filepath,'w',zipfile.ZIP_STORED)
     paths = []
@@ -112,14 +112,34 @@ def get_xml_file(person):
         names.append(str(item['image'])+'.xml')  
         fp.close()
         
-
-    for i in range(len(paths)):
-        print(paths[i])
-        print(names[i])
-        f.write(paths[i],'/' + names[i])
-        os.remove(paths[i])
-        
-    #f.write(DIR+'/yd_pose/test/test.txt','/test.txt')    
+    
+    if not zipFileCnt:
+        for i in range(len(paths)):
+            print(paths[i])
+            print(names[i])
+            f.write(paths[i],'/' + names[i])
+            os.remove(paths[i])
+    else:
+    ###打包成多个zip，再将所有zip压缩成一个总压缩包
+        index = 0
+        file_sum = len(paths)
+        file_cnt = int(zipFileCnt)
+        zip_cnt = (file_sum - 1) // file_cnt + 1
+        zip_path = DIR+'/yd_pose/test/file_zip.zip'
+        for i in range(zip_cnt):
+            file_zip = zipfile.ZipFile(zip_path,'w',zipfile.ZIP_STORED)
+            for j in range(file_cnt):
+                if index >= file_sum:
+                    break
+                print(paths[index])
+                print(names[index])
+                file_zip.write(paths[index],'/' + names[index])
+                os.remove(paths[index])
+                index += 1
+            zip_name = '/{}.zip'.format(i + 1)
+            file_zip.close()
+            f.write(zip_path, zip_name)
+            os.remove(zip_path)
     f.close()
     return [DIR+'/yd_pose/test/', 'test.zip']
     #os.remove(DIR+'/yd_pose/test/test.zip')
@@ -269,11 +289,12 @@ def get_custom_file(cocopath):
         json.dump(res, f)
     return output_name
 
-@app.route('/label_download')
+@app.route('/label_download', methods=['GET','POST'])
 def label_download():
     # 标注文件下载
     userFileIds = request.values.get('userFileIds')
     fileType = request.values.get('fileType')
+    zipFileCnt = request.values.get('zipFileCnt', '')
     resp = {}
     resp['code'] = 1
     resp['msg'] = '未知原因'
@@ -287,7 +308,7 @@ def label_download():
         resp['code'] = 1
         resp['msg'] = '部分文件未存在标注文件'
     if fileType == 'xml':
-        filepath = get_xml_file(person)
+        filepath = get_xml_file(zipFileCnt, person)
         respath = filepath[0]
         resname = filepath[1]
     elif fileType == 'coco':
