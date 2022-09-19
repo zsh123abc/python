@@ -4,26 +4,53 @@ from flask import request
 from model import db_file 
 import math
 
-@app.route('/ai_review', methods = ['POST'])
+@app.route('/label_check', methods = ['POST'])
 def ai_review():
     '''
     机器评审
     '''
-    filePath = request.values.get('filePath', '')
+#    filePath = request.values.get('filePath', '')
+    checkType = request.values.get('checkType', 'all')
     response = {'code':1}
-    if not filePath:
-        response['msg'] = '路径错误'
-        return response
+#    if not filePath:
+#        response['msg'] = '路径错误'
+#        return response
+#    if checkType not in ('all', 'line_filter', 'point_filter'):
+#        response['msg'] = 'checkType参数错误'
+#        return response
+#
+#    # 获取文件路径
+#    sql = '''select filePath, fileName from userfile where userFileId in ({}) and isDir=1'''.format(filePath)
+#    result = db_file(sql)
+#    print(result)
+#    filePaths = list()
+#    for res in result:
+#        file_name = "'{}{}/'".format(res.get('filePath'),res.get('fileName'))
+#        print(file_name)
+#        filePaths.append(file_name)
+#    print(filePaths)
+#    # 获取图片id
+#    sql = '''select img_id from ai_image where path in ({}) and status = 0'''.format(','.join(filePaths))
+#    print(sql)
+#    result = db_file(sql)
+#    if not result:
+#        response['msg'] = '没有找到图片'
+#        return response
+#    result = [str(res.get('img_id')) for res in result]
+#    img_ids = ','.join(result)
+#
 
-    # 获取图片id
-    sql = '''select img_id from ai_image where path = "{}" and status = 0'''.format(filePath)
+    fileIds = request.values.get('userFileIds','')
+    if not fileIds:
+        response['msg'] = 'fileIds不能为空'
+        return response 
+    sql = '''select img_id from ai_image where file_id in ({})'''.format(fileIds)
     print(sql)
     result = db_file(sql)
     if not result:
-        response['msg'] = '没有找到图片'
-        return response
-    result = [str(res.get('img_id')) for res in result]
-    img_ids = ','.join(result)
+        response['msg'] = '找不到对应的文件'
+        return response 
+    img_ids = ','.join([str(res.get('img_id')) for res in result])
 
     # 获取标注数据
     sql = '''select * from ai_label_skeleton where img_id in ({})'''.format(img_ids)
@@ -54,9 +81,11 @@ def ai_review():
         data[img_id] = lines
         keypoints[img_id] = keypoint
 
+    if not data:
+        return response
     mean_lines = mean_line(data.values())
     # var_lines = var_line(data, mean_lines)
-    set_label_status(data, mean_lines, keypoints)
+    set_label_status(data, mean_lines, keypoints, checkType)
     response['code'] = 0
     response['msg'] = 'ok'
     return response
@@ -88,23 +117,32 @@ def mean_line(lines):
 
 
 
-def set_label_status(data, mean_lines, keypoints):
+def set_label_status(data, mean_lines, keypoints, checkType):
     '''
     筛选设置骨骼点状态
     '''
-    pass_img_v1, fail_img_v1 = error_line_filter(data, mean_lines)
-    print('error line')
-    pass_img, fail_img_v2 = error_keypoint_filter(keypoints, pass_img_v1)
-    print('error point')
-    fail_img_v1 += fail_img_v2
-    fail_img = fail_img_v1
+    fail_img = list()
+    fail_img_v1, fail_img_v2 = list(), list()
+    pass_img = data.keys()
+    if checkType in ('all', 'line_filter'):
+        pass_img, fail_img_v1 = error_line_filter(data, mean_lines)
+        print('line filter')
+    if checkType in ('all', 'point_filter'):
+        pass_img, fail_img_v2 = error_keypoint_filter(keypoints, pass_img)
+        print('point filter')
+    fail_img = fail_img_v1 + fail_img_v2
 
-    sql = '''update ai_label_skeleton set status = 1 where img_id in ({})'''.format(','.join(fail_img))
-    print(sql)
-    db_file(sql)
-    sql = '''update ai_label_skeleton set status = 3 where img_id in ({})'''.format(','.join(pass_img))
-    print(sql)
-    db_file(sql)
+    print(fail_img)
+    print(pass_img)
+    pass_img = [str(pass_id) for pass_id in pass_img]
+    if fail_img:
+        sql = '''update ai_label_skeleton set status = 1 where img_id in ({})'''.format(','.join(fail_img))
+        print(sql)
+        db_file(sql)
+    if pass_img:
+        sql = '''update ai_label_skeleton set status = 3 where img_id in ({})'''.format(','.join(pass_img))
+        print(sql)
+        db_file(sql)
 
 
 def error_line_filter(data, mean_lines):

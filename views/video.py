@@ -35,12 +35,13 @@ def get_frame(videoPath, videoName, outPutDir, fileurl, frame_cnt):
     if frame_cnt:
         frameFrequency=int(frame_cnt)
     else:
-        frameFrequency=fps
+        frameFrequency=int(fps)
     print(frameFrequency)
     print(frame_cnt)
     while True:     
         times+=1     
         res, image = camera.read()     
+        print(res)
         if not res:         
             print('not res , not image')
             break     
