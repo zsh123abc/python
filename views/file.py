@@ -64,6 +64,7 @@ def get_label_tag(label_id):
     else:
         return 'male'
 
+# 获取xml文件
 def get_xml_file(zipFileCnt, person):
     filepath = DIR+'/yd_pose/test/test.zip'
     f = zipfile.ZipFile(filepath,'w',zipfile.ZIP_STORED)
@@ -71,11 +72,11 @@ def get_xml_file(zipFileCnt, person):
     names = []
     for item in person:
         #在内存中创建一个空的文档
-        doc = xml.dom.minidom.Document() 
+        doc = xml.dom.minidom.Document()
         #创建一个根节点Managers对象
         root = doc.createElement('annotation')
         #将根节点添加到文档对象中
-        doc.appendChild(root) 
+        doc.appendChild(root)
         nodeimage = doc.createElement('image')
         nodecategory = doc.createElement('category')
         nodesubcategory = doc.createElement('subcategory')
@@ -93,11 +94,11 @@ def get_xml_file(zipFileCnt, person):
             nodekeypoint = doc.createElement('keypoint')
             #设置根节点的属性
             nodekeypoint.setAttribute('name', name)
-            nodekeypoint.setAttribute('zorder', str(items[name]['zorder'])) 
-            nodekeypoint.setAttribute('x', str(items[name]['x'])) 
+            nodekeypoint.setAttribute('zorder', str(items[name]['zorder']))
+            nodekeypoint.setAttribute('x', str(items[name]['x']))
             nodekeypoint.setAttribute('y', str(items[name]['y'])) 
-            nodekeypoint.setAttribute('z', str(items[name]['z'])) 
-            nodekeypoint.setAttribute('visible', str(items[name]['visible'])) 
+            nodekeypoint.setAttribute('z', str(items[name]['z']))
+            nodekeypoint.setAttribute('visible', str(items[name]['visible']))
             nodekeypoints.appendChild(nodekeypoint)
 
         root.appendChild(nodeimage)
@@ -109,7 +110,7 @@ def get_xml_file(zipFileCnt, person):
         print(path)
         doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
         paths.append(path)
-        names.append(str(item['image'])+'.xml')  
+        names.append(str(item['image'])+'.xml')
         fp.close()
         
     
@@ -298,15 +299,19 @@ def label_download():
     resp = {}
     resp['code'] = 1
     resp['msg'] = '未知原因'
+    # 文件类型错误
     if fileType not in ['coco','xml','custom']:
         resp['code'] = 1
         resp['msg'] = '文件类型错误'
+    # 从数据库获取多个节点    
     person = get_db_points(userFileIds)
+    # 用逗号分割
     idList = userFileIds.split(',')
-
+    # 判断是否获取到所有标注文件
     if len(person) != len(idList):
         resp['code'] = 1
         resp['msg'] = '部分文件未存在标注文件'
+    # 判断文件类型是否为xml类型    
     if fileType == 'xml':
         filepath = get_xml_file(zipFileCnt, person)
         respath = filepath[0]
