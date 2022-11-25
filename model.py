@@ -1,6 +1,7 @@
 import pymysql
 import threading
-from DBUtils.PooledDB import PooledDB
+from dbUtils.PooledDB import PooledDB
+# from dbutils. import Poo
 
 class pools():
     # 初始化函数
@@ -11,7 +12,7 @@ class pools():
         if self.pool:
             # 连接数据库
             conn = self.pool.connection()
-            
+
         return conn
     # print(th, '链接被拿走了', conn1._con)
     # print(th, '池子里目前有', pool._idle_cache, '\r\n')

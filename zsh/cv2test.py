@@ -1,4 +1,3 @@
-import numpy as np
 import cv2 as cv
 
 img = cv.imread("D:/zsh/biaozhu/img/images/video_1.mp4_test_0378.jpg")
