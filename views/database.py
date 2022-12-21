@@ -23,6 +23,7 @@ def get_image_path(userFileId):
     sql = '''select filePath, fileName, extendName from userfile where userFileId = {} limit 1'''.format(userFileId)
     result = db_file(sql)
     for res in result:
+        # /zsh/label_data/images/17 (1)0011.jpg
         path = res['filePath'] + res['fileName'] + '.' + res['extendName']
     return path
 

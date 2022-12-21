@@ -6,7 +6,7 @@ from DBUtils.PooledDB import PooledDB
 
 def sqlquery(sql):
     pyconfig = {
-    #'host':'192.168.100.109',
+    #'host':'192.168.100.98',
     'host':'label_db',
     'port':3306,
     'user':'root',

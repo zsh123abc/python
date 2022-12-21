@@ -194,63 +194,99 @@ def getPersonKeypoints(name, results):
 
     return person
 
+
 def convert(img_dir, userFileIds='', onnx_path=tflite_path):
-    # yd pose keypoint order
-    KP_Names = ['R_Ankle', 'R_Knee', 'R_Hip', 'L_Hip', 'L_Knee', 'L_Ankle', '', '', 'Neck', 'B_Head', 'R_Wrist',
-                'R_Elbow', 'R_Shoulder', 'L_Shoulder', 'L_Elbow', 'L_Wrist']                
+    # yd pose keypoint order        
+    # KP_Names = ['R_Ankle', 'R_Knee', 'R_Hip', 'L_Hip', 'L_Knee', 'L_Ankle', '', '', 'Neck', 'B_Head', 'R_Wrist',
+    #             'R_Elbow', 'R_Shoulder', 'L_Shoulder', 'L_Elbow', 'L_Wrist']  
+    # 集合记录需要标注的人体关节点名字              
     person_keys = ['B_Head','Neck','L_Shoulder','R_Shoulder','L_Elbow','R_Elbow','L_Wrist','R_Wrist','L_Hip',
         'R_Hip','L_Knee','R_Knee','L_Ankle','R_Ankle','Nose','L_Ear','L_Eye','R_Eye','R_Ear']
-    csv_output_rows = []
-
+    # csv_output_rows = []
     p = PoseEstimator(model_path=onnx_path)
     userfile_str = ''
     if userFileIds:
         userfile_str = 'and userFileId in ({})'.format(userFileIds)
+    # 查询，从userfile表中获取 userFileId,filename 两列内容
+    # 条件：filePath = img_dir 并且 extendName = jpg 并且 userFileId 要在userFileIds集合里
     sql = '''select userFileId,fileName from userfile where filePath="{}" and extendName="jpg" {}'''.format(img_dir, userfile_str)
     #print(sql)
     result = db_file(sql)
 
+    # 循环取出数据
     for res in result:
         print(res)
+        # 文件名加上后缀
         name = res['fileName'] + '.jpg'
+        # 用户文件id
         userFileId = res['userFileId']
+        # 查询ai_image表中所有列的内容
+        # 条件 file_id=userFileId
         sql = '''select * from ai_image where file_id={}'''.format(userFileId)
         flag = True
+        # 没有查询到数据就插入数据之后在查询
         if not db_file(sql):
+            # insert into ai_image set 
+            # set 一次插入多条数据
             sql = '''insert into ai_image set file_id={}, path="{}",type="jpg",status=0'''.format(userFileId, img_dir)
             db_file(sql)
+            # 查询 ai_image 表中img_id列中 file_id = userFileId 的数据
             sql = '''select img_id from ai_image where file_id={}'''.format(userFileId)
             flag = False
+        # 数据第一条中img_id对应的值
         img_id = db_file(sql)[0]['img_id']
         print(flag)
+        # 文件所在的绝对路径
         file = DIR+img_dir+name
         print(file)
+        # 根据路径读入图片
         img = cv2.imread(file)
+        # 没有数据就跳过本次循环
         if img is None:
             continue
+
         predict = p.predict(img)
         person = getPersonKeypoints(name, predict[0])
+
         #print(person)
-        data = person["image"]
+        # data = person["image"]
+
+        # 空列表
         kps = []
+        # 循环取出person中keypoints对应的数据
         for keypoint in person['keypoints']:
+            # index() 判断字符串是否包含另一个字符串，返回第一次出现的地址，没有就抛出异常
             idx = person_keys.index(keypoint) + 1
             for k in person['keypoints'][keypoint]:
+                # (k, idx, person['keypoints'][keypoint][k]) 数据所在的集合，id，数据
+                # 用= 为了后面直接给sql语句使用
                 str_point = '%s%s=%s' % (k, idx, person['keypoints'][keypoint][k])
                 #print(str_point)
+                # 列表添加数据
                 kps.append(str_point)
+        # 用','分开kps，并且组成一个新的字符串   
         keypoints = ','.join(kps)
         #print(keypoints)
+
+        # 查询ai_label_skeleton表中label_id列的内容
+        # 条件 img_id = img_id
         sql = '''select label_id from ai_label_skeleton where img_id={}'''.format(img_id)
         label_result = db_file(sql)
+
+        # 判断label_result是否为空，为空else
+        # 有数据修改已有数据，没有插入新数据
         if label_result:
+            # 修改ai_label_skeleton表中的person_id,status数据，set:修改多条数据，where：只修改img_id=img_id的数据
             sql = '''update ai_label_skeleton set person_id=0,status=0,{} where img_id={}'''.format(keypoints, img_id)
             db_file(sql)
         else:
+            # ai_label_skeleton表插入多条数据
             sql = '''insert into ai_label_skeleton set person_id=0,status=0,img_id={},{}'''.format(img_id, keypoints)
             db_file(sql)
+            # 查询ai_label_skeleton表中label_id列的数据，条件 img_id相等
             sql = '''select label_id from ai_label_skeleton where img_id={}'''.format(img_id)
             label_id = db_file(sql)[0]['label_id']
+            # ai_label_skeleton表插入多条数据
             sql = '''insert into ai_label_tag set tag_id = 1,label_id={}'''.format(label_id)
             db_file(sql)
         

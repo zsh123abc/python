@@ -72,9 +72,11 @@ def create_label(filePath, userFileId, person_id, person):
     # 创建节点并且保存至数据库中
     create_point(person, id, person_id)
 
-# 获取标签
+# 根据userFilesid获取img_id
+# 根据img_id获取label_id
+# 根据label_id获取标签
 def get_label_tag(label_id):
-    # 数据库查询
+    # 数据库查询 tag：male
     sql = '''select ai_tag.tag as tag from ai_label_tag, ai_tag where ai_label_tag.tag_id = ai_tag.tag_id and ai_label_tag.label_id = {}'''.format(label_id)
     print(sql)
     result = db_file(sql)
@@ -90,19 +92,21 @@ def get_label_tag(label_id):
 def get_xml_file(zipFileCnt, person):
     filepath = DIR+'/yd_pose/test/test.zip'
     # 新建zip对象，后面用write()方法添加文件到这个压缩包中
+    # zipfile.ZIP_STORED 表示储存格式
+    # 'w' 以只写模式打开文件，若该文件存在，打开时会清空文件中原有的内容。
     f = zipfile.ZipFile(filepath,'w',zipfile.ZIP_STORED)
     # 空列表
     paths = []
     names = []
     # 循环拿出person的每一项
     for item in person:
-        #在内存中创建一个空的文档
+        #在内存中创建一个空的xml文档对象
         doc = xml.dom.minidom.Document()
         #创建一个根节点Managers对象
         root = doc.createElement('annotation')
         #将根节点添加到文档对象中
         doc.appendChild(root)
-        # 创建叶子节点
+        # 创建四个叶子节点
         nodeimage = doc.createElement('image')
         nodecategory = doc.createElement('category')
         nodesubcategory = doc.createElement('subcategory')
@@ -112,12 +116,13 @@ def get_xml_file(zipFileCnt, person):
             appendChild() 向节点的子节点列表的末尾添加新的子节点。
             doc.createTextNode() 创建文本节点
         '''
+        # 在image标签里添加内容
         nodeimage.appendChild(doc.createTextNode(item['image']))
         # 在nodecategory节点后面添加新创建的文本节点
         nodecategory.appendChild(doc.createTextNode('person'))
         # item字典中label_id对应的值
         label_id = item['label_id']
-        # 获取id对应的标签
+        # 获取 label_id 对应的 tag 标签
         tag = get_label_tag(label_id)
         # 在nodesubcategory节点后面添加新创建的文本节点
         nodesubcategory.appendChild(doc.createTextNode(tag))
@@ -127,20 +132,20 @@ def get_xml_file(zipFileCnt, person):
         for name in item['keypoints']:
             # 判断三个坐标x,y,z是否为0
             if items[name]['x'] == items[name]['y'] == items[name]['z'] == 0:
-                # 为0退出本此循环
+                # 为0退出本次循环
                 continue
-            # 创建节点
+            # 创建叶子节点
             nodekeypoint = doc.createElement('keypoint')
-            #设置根节点的属性
+            #设置叶子节点的属性
             nodekeypoint.setAttribute('name', name)
             nodekeypoint.setAttribute('zorder', str(items[name]['zorder']))
             nodekeypoint.setAttribute('x', str(items[name]['x']))
-            nodekeypoint.setAttribute('y', str(items[name]['y'])) 
+            nodekeypoint.setAttribute('y', str(items[name]['y']))
             nodekeypoint.setAttribute('z', str(items[name]['z']))
             nodekeypoint.setAttribute('visible', str(items[name]['visible']))
-            # 添加节点到文档对象
+            # 添加节点到叶子节点
             nodekeypoints.appendChild(nodekeypoint)
-        # 添加节点到根节点
+        # 添加叶子节点到根节点
         root.appendChild(nodeimage)
         root.appendChild(nodecategory)
         root.appendChild(nodesubcategory)
@@ -150,55 +155,73 @@ def get_xml_file(zipFileCnt, person):
         # 以写的方式打开，但是需要注意的是： 若文件存在，则文件会被清空
         fp = open(path, 'w')
         print(path)
-        # writexml()第一个参数是目标文件对象，第二个参数是根节点的缩进格式，第三个参数是其他子节点的缩进格式，
+        # writexml()第一个参数是目标文件对象，第二个参数是根节点的缩进格式，
+        # 第三个参数是其他子节点的缩进格式，
         # 第四个参数制定了换行格式，第五个参数制定了xml内容的编码。  
         doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
-        # 把路径添加到列表
+        # 把路径添加到paths列表
         paths.append(path)
+        # 转成str类型添加名字到names[]
         names.append(str(item['image'])+'.xml')
         # 关闭文件
         fp.close()
         
     # 判断zipFileCnt是否为空，不为空：false
     if not zipFileCnt:
+        # 一个图片一个路径，几张图片循环几次
         for i in range(len(paths)):
             print(paths[i])
             print(names[i])
             # 在文件中写入数据
             f.write(paths[i],'/' + names[i])
+            # 写入数据后删除paths对应的路径
             os.remove(paths[i])
     else:
     ###打包成多个zip，再将所有zip压缩成一个总压缩包
         index = 0
+        # 存放几个路径
         file_sum = len(paths)
+        # 压缩文件，默认值是"1"
         file_cnt = int(zipFileCnt)
+        # '//'向下取整
         zip_cnt = (file_sum - 1) // file_cnt + 1
+        # /data/dataset/yd_pose/test
         zip_path = DIR+'/yd_pose/test/file_zip.zip'
         for i in range(zip_cnt):
+            # 新建zip对象，后面用write()方法添加文件到这个压缩包中
+            # zipfile.ZIP_STORED 表示储存格式
+            # 'w' 以只写模式打开文件，若该文件存在，打开时会清空文件中原有的内容。
             file_zip = zipfile.ZipFile(zip_path,'w',zipfile.ZIP_STORED)
             for j in range(file_cnt):
+                # file_sum<=index退出本次循环
                 if index >= file_sum:
                     break
                 print(paths[index])
                 print(names[index])
+                # file_zip写入数据
                 file_zip.write(paths[index],'/' + names[index])
+                # 写入完后删除对应的路径
                 os.remove(paths[index])
                 index += 1
+            # 压缩文件命名
             zip_name = '/{}.zip'.format(i + 1)
+            # 关闭文件
             file_zip.close()
             # 在文件中写入数据
             f.write(zip_path, zip_name)
             # 用于删除指定路径下的文件，如果指定的路径是一个目录，将抛出OsError
             os.remove(zip_path)
-    # 关闭文件        
+    # 关闭文件
     f.close()
+    # 返回 压缩文件路径，压缩文件名
     return [DIR+'/yd_pose/test/', 'test.zip']
+
     #os.remove(DIR+'/yd_pose/test/test.zip')
     # with open(DIR+'/yd_pose/test/test.zip','rb') as f1:
     #     base64_str = base64.b64encode(f1.read())
     # return base64_str
 
-# 获取图片的长宽    
+# 获取图片的长宽
 def get_image_wh(userFileId):
     sql = '''select imageHeight,imageWidth from userfile,image where userfile.userFileId={} and userfile.fileId=image.fileId'''.format(userFileId)
     res = db_file(sql)
@@ -211,6 +234,7 @@ def get_coco_file(userFileIds,person):
     if person:
         db_type = person[0]['filepath'][9:]
     userFileIds = userFileIds.split(',')
+    # /data/dataset/annotations
     save_path = DIR + '/annotations/'
     respath = save_path
     if not os.path.exists(save_path):
@@ -347,12 +371,13 @@ def get_custom_file(cocopath):
     return output_name
 
 
-# 标注文件下载
+# 批量下载标注文件
 @app.route('/label_download', methods=['GET','POST'])
 def label_download():
-    userFileIds = request.values.get('userFileIds')
-    fileType = request.values.get('fileType')
-    zipFileCnt = request.values.get('zipFileCnt', '')
+    # 浏览器请求的表单数据，获取对应的数据
+    userFileIds = request.values.get('userFileIds')# 1007935
+    fileType = request.values.get('fileType')# xml
+    zipFileCnt = request.values.get('zipFileCnt', '')# '1'
     resp = {}
     resp['code'] = 1
     resp['msg'] = '未知原因'
@@ -361,24 +386,26 @@ def label_download():
         resp['code'] = 1
         resp['msg'] = '文件类型错误'
     # 从数据库获取多个节点
+    # 关节数据或者None
     person = get_db_points(userFileIds)
     # 用逗号分割
     idList = userFileIds.split(',')
-    # 判断是否获取到所有标注文件
     if len(person) != len(idList):
         resp['code'] = 1
         resp['msg'] = '部分文件未存在标注文件'
-    # 判断文件类型是否为xml类型    
+    # 判断文件类型是否为xml类型
     if fileType == 'xml':
+        # 下载文件的路径 /data/dataset/yd_pose/test/test.zip
         filepath = get_xml_file(zipFileCnt, person)
         respath = filepath[0]
         resname = filepath[1]
-    # 判断文件类型是否为coco类型        
+    # 判断文件类型是否为coco类型
     elif fileType == 'coco':
+        # /data/dataset/annotations
         filepath = get_coco_file(userFileIds, person)
         respath = filepath[0]
         resname = filepath[1]
-    # 判断文件类型是否为custom类型      
+    # 判断文件类型是否为custom类型  
     elif fileType == 'custom':
         cocopath = get_coco_file(userFileIds, person)
         resname = get_custom_file(cocopath)
@@ -390,9 +417,11 @@ def label_download():
         # 在视图内部掌控响应对象的结果
 
         # send_from_directory() 文件下载
+
         # respath：文件的绝对路径，不包含文件名
         # resname：文件名称
         # as_attachment：是否显示文件名称
+        # 下载文件的路径 /data/dataset/yd_pose/test/test.zip
         return make_response(send_from_directory(respath, resname, as_attachment=True))
     except:    
         # 将python对象编码成Json字符串    
@@ -400,6 +429,7 @@ def label_download():
 
 
 # xml文件上传接口
+# 上传xml骨骼点数据，修改数据库中对应的数据
 @app.route('/upload_label_file', methods=['GET','POST'])
 def uploadlabelfile():
     # request.method 获取当前请求方式
@@ -407,7 +437,7 @@ def uploadlabelfile():
         # render_template 模板,引入html文件
         return render_template('commit.html')
     if request.method == 'POST':
-        # request.files[]就表示原先的 file控件名,获取传到后端的file文件
+        # request.files[]就表示原先的 file控件名,获取上传到后端的file文件
         file = request.files['file']
         # request.form 获取指定的表单数据
         filename = request.form['filename']
@@ -416,16 +446,20 @@ def uploadlabelfile():
         resp['code'] = 1
         # 判断是否获取到文件
         if not file:
+            # 没有获取到，返回退出
             resp['msg'] = '上传失败'
             return resp
-        # 获取节点
+        # 根据xml文件路径获取到xml文件的骨骼点信息
         person = get_point(file)
-        # 获取节点类型
+        # 把xml骨骼点信息，用字典形式储存
+        # 一次keypoint[]储存了一张图片的所有骨骼点的标注位置
         keypoint = get_dbtype_point(person)
-        # 用逗号分隔后在组成字符串
+        # 把列表用逗号分隔后在组成字符串
         keypoint = ','.join(keypoint)
         try:
-            # 用‘_’分割成两个字符串
+            # 用‘_’分割成两个字符串,名字中只能存在一个_下划线
+            # 1324443197.mp4_test_0000.xml
+            # 1324443197.mp4，test_0000.xml
             filename, person_id = filename.split('_')
         except:
             resp['msg'] = '文件名错误'

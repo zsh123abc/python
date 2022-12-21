@@ -1,4 +1,4 @@
-
+import logging
 import os
 # abspath 获取脚本路径，dirname 去掉文件名，返回目录 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -8,7 +8,7 @@ class BaseConfig:  # 基本配置类
     # os.getenv 获取环境变量键SECRET_KEY的只（存在），否则返回默认值some secret words
     SECRET_KEY = os.getenv('SECRET_KEY', 'some secret words')
     ITEMS_PER_PAGE = 10
-
+    level = logging.DEBUG
 
 class DevelopmentConfig(BaseConfig):  #  开发环境
     DEBUG = True

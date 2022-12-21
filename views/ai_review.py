@@ -4,13 +4,15 @@ from flask import request
 from model import db_file 
 import math
 
+# 算法二次评估/全部算法
 @app.route('/label_check', methods = ['POST'])
 def ai_review():
     '''
-    机器评审
+    机器评审,status:合格为3,不合格为2,没有检测的为0
+    骨骼点之间的距离差距太大就是不合格
     '''
 #    filePath = request.values.get('filePath', '')
-    checkType = request.values.get('checkType', 'all')
+    checkType = request.values.get('checkType', 'all') #undefined，没有传入数据的意思
     response = {'code':1}
 #    if not filePath:
 #        response['msg'] = '路径错误'
@@ -38,21 +40,24 @@ def ai_review():
 #        return response
 #    result = [str(res.get('img_id')) for res in result]
 #    img_ids = ','.join(result)
-#
 
-    fileIds = request.values.get('userFileIds','')
+    fileIds = request.values.get('userFileIds','') # 1007935
     if not fileIds:
+        # 没有选择图片就机器评审
         response['msg'] = 'fileIds不能为空'
         return response 
     sql = '''select img_id from ai_image where file_id in ({})'''.format(fileIds)
     print(sql)
+    # img_id:266590
     result = db_file(sql)
     if not result:
+        # 没有进行骨骼点预测的图片在数据库中没有img_id
         response['msg'] = '找不到对应的文件'
-        return response 
+        return response
+    # 有多个img_id就用逗号分隔开，一个的时候就是原样    
     img_ids = ','.join([str(res.get('img_id')) for res in result])
 
-    # 获取标注数据
+    # 根据查询到的img_id获取ai_label_skeleton表中的标注数据
     sql = '''select * from ai_label_skeleton where img_id in ({})'''.format(img_ids)
     print(sql)
     result = db_file(sql)
@@ -69,6 +74,7 @@ def ai_review():
             y1 = res.get('y{}'.format(key_line[0]+1))
             x2 = res.get('x{}'.format(key_line[1]+1))
             y2 = res.get('y{}'.format(key_line[1]+1))
+            # 计算两点长度
             leng_lines = leng_line([x1,y1],[x2,y2])
             lines.append(leng_lines)
         for i in range(1,15):
@@ -83,8 +89,11 @@ def ai_review():
 
     if not data:
         return response
+    # 计算总骨骼点之间的平均值    
     mean_lines = mean_line(data.values())
     # var_lines = var_line(data, mean_lines)
+
+    # 筛选设置骨骼点状态
     set_label_status(data, mean_lines, keypoints, checkType)
     response['code'] = 0
     response['msg'] = 'ok'
@@ -125,9 +134,11 @@ def set_label_status(data, mean_lines, keypoints, checkType):
     fail_img_v1, fail_img_v2 = list(), list()
     pass_img = data.keys()
     if checkType in ('all', 'line_filter'):
+        # 筛选出骨骼线不合格的标注
         pass_img, fail_img_v1 = error_line_filter(data, mean_lines)
         print('line filter')
     if checkType in ('all', 'point_filter'):
+        # 筛选出骨骼点对称错乱标注
         pass_img, fail_img_v2 = error_keypoint_filter(keypoints, pass_img)
         print('point filter')
     fail_img = fail_img_v1 + fail_img_v2

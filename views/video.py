@@ -15,29 +15,33 @@ def get_frame_name(outPutDir, videoName, times):
     n = len(str(times))
     times = '0'*(4-n) + times
     # filename 视频帧名字
+    # /data/dataset/zsh/videos/label_data/images/17(1)0001.jpg
     filename = outPutDir + videoName + times + '.jpg'
-    # videoName+times 视频名字加上，123之类的
+    # 服务器存放图片的路径，图片名字无后缀：17(1)0001
     return [filename,videoName+times]
 
 # 提取视频帧，并且保存到指定文件里
-# videopath 视频文件路径，
-# videoName 视频名字，
-# outPutDir 视频文件完整路径,
-# fileurl 从数据库拿到的要抽帧视频的路径，
-# frame_cnt 表单数据
+# videopath 视频文件路径，/zsh/videos/
+# videoName 视频名字，17(1)
+# outPutDir 视频文件抽帧后图片存放路径，/zsh/videos/label_data/images/
+# fileurl 从数据库拿到的服务器存放视频的路径，/data/dataset/yd_pose/dance/k-pop/maria/ori_data/round_1/videos/17.mp4
+# frame_cnt 表单数据，无
 def get_frame(videoPath, videoName, outPutDir, fileurl, frame_cnt):
-    #要提取视频的文件名，隐藏后缀
+    #要提取视频的文件名
     sourceFileName=videoName
-    #把后缀接上,完整视频路径
+    #把后缀接上,服务器存放视频的路径
+    # /data/dataset/zsh/videos/17.mp4
     video_path = DIR + videoPath + sourceFileName+'.mp4'
     print(video_path)
     # 计数用，多少帧截一张
     times=0
     #输出图片到当前目录vedio文件夹下
     # os.path.exists 文件夹存在返回True，反之返回false
+    # /data/dataset/zsh/videos/label_data/images/
     if not os.path.exists(DIR+outPutDir):
         #如果文件目录不存在则创建目录
         # os.makedirs 递归生成文件夹，用来创建多层目录（单层用os.mkdir)
+        # /data/dataset/zsh/videos/label_data/images/
         os.makedirs(DIR+outPutDir)
         # 插入文件夹，outPutDir[:-18]：文件名字，'label_data'：文件路径
         # 把数据插入数据库
@@ -70,11 +74,16 @@ def get_frame(videoPath, videoName, outPutDir, fileurl, frame_cnt):
         # 每50帧提取一个，times从1-50，51取模不等于0
         if times%frameFrequency==0:
             # get_frame_name() 命名视频帧
+            # /data/dataset/zsh/videos/label_data/images/
+            # 服务器存放图片路径，视频名字，计数n
             res = get_frame_name(DIR+outPutDir, videoName, str(n))
+            # res：服务器存放图片的路径，图片名字无后缀：17(1)0001
             n += 1
-            # 取出视频帧名字
+            # 取出视频帧路径，有名字后缀
+            # /data/dataset/zsh/videos/label_data/images/17(1)0001.jpg
             filename = res[0]
-            # 取出加上数字后的视频名字
+            # 取出加上数字后的视频名字，，无后缀
+            # 17(1)0001
             name = res[1]
             print(filename)
             print(name)
@@ -104,15 +113,15 @@ def get_video_info(userFileIds):
     for res in result:
         # 视频文件路径
         # 列表中添加数据
-        videopath.append(res['filePath'])
+        videopath.append(res['filePath'])# /zsh/videos/
         # 视频文件名字
-        videolist.append(res['fileName'])
+        videolist.append(res['fileName'])# 17(1)
         # lower() 大写字母转小写
-        videoextend.append(res['extendName'].lower())
-        videofileid.append(res['fileId'])
+        videoextend.append(res['extendName'].lower())#mp4
+        videofileid.append(res['fileId'])#10161
     print(videopath)
     print(videoextend)
-    # set() 转成一个集合
+    # set() 转成一个集合{}
     videopath = set(videopath)
     videoextend = set(videoextend)
     # 判断视频文件路径是否存在
@@ -121,13 +130,14 @@ def get_video_info(userFileIds):
     # 判断视频文件名字是否存在    
     elif len(videoextend) != 1:
         return 1
-    # list(videopath)[0] 视频文件路径集合中的第一个，
-    # list(videoextend)[0] 视频文件名字的第一个，
-    # videolist 存放视频文件名字的集合，
-    # videofileid 视频文件Id
+    # list(videopath)[0] 视频文件路径集合中的第一个，/zsh/videos/
+    # list(videoextend)[0] 视频文件名字后缀的第一个，mp4
+    # videolist 存放视频文件名字的集合，17(1)
+    # videofileid 视频文件Id，10161
     res = [list(videopath)[0], list(videoextend)[0], videolist, videofileid]
     return res
 
+# 批量抽取视频帧
 # 装饰器@ methods=['POST'] 代表这个url地址允许POST请求方式
 # post 客户端使用响应码来确定应用程序的操作是否成功
 # 通过route()装饰器的方法将函数连接到请求的URL上 ’/get_video_frame‘
@@ -149,6 +159,7 @@ def get_video_frame():
     print(userFileIds)
     # get_video_info() 从数据库中取出视频文件的数据：
     # 没有取到数据就是0或1
+    # 路径，后缀，名字，fileId
     video_info = get_video_info(userFileIds)
     # ==0：视频文件路径错误，==1：视频文件类型错误
     if video_info == 0:
@@ -164,14 +175,15 @@ def get_video_frame():
         resp['msg'] = 'Video Type Error'
         return resp    
     # 视频文件路径
-    videopath = video_info[0]
+    videopath = video_info[0]# 路径 /zsh/videos/
     # 视频文件名字
-    videolist = video_info[2]
-    # 视频文件对应的id
-    videofileid = video_info[3]
+    videolist = video_info[2]# 名字 17
+    # 视频文件对应的fileId
+    videofileid = video_info[3]# fileId 10161
     print(videopath)
     print(videolist)
     # 字符串切片判断路径是否是指定路径，否：文件路径错误
+    # 当前路径是否是/videos/
     if videopath[-8:] != '/videos/':
         # 执行出错
         resp['code'] = 1
@@ -181,25 +193,30 @@ def get_video_frame():
         return resp
     # 如果是指定路径就在后面加上新路径拼凑成完整路径
     # outPutDir 视频抽帧后图片存放位置
+    # /zsh/label_data/images/
     outPutDir=videopath[:-7]+'label_data/images/'
     # 视频文件名字长度
     n = len(videolist)
     # 视频名字对应的下标
     for i in range(n):
         # 循环把视频名字一个一个赋值过去
-        video = videolist[i]
-        fileid = videofileid[i]
+        video = videolist[i] # 17(1)
+        # fileId 
+        fileid = videofileid[i] # 10161
         # 数据库查询id
         sql = '''select fileUrl from file where fileId={}'''.format(fileid)
         # 拿到的所有数据的第一条中和’fileUrl‘对应的数据
-        fileurl = db_file(sql)[0]['fileUrl']
-        # 把根目录路径加上，完整路径
+        #yd_pose/dance/k-pop/maria/ori_data/round_1/videos/17.mp4
+        fileurl = db_file(sql)[0]['fileUrl'] 
+        # 把根目录路径加上，完整路径,服务器储存视频的绝对路径
+        # /data/dataset/yd_pose/dance/k-pop/maria/ori_data/round_1/videos/17.mp4
         fileurl = DIR + '/' + fileurl
-        # videopath 视频路径，
-        # video 视频名字，
-        # outPutDir 视频文件绝对路径,
-        # fileUrl 从数据库拿到的需要抽帧视频的路径,
-        # frame_cnt 表单数据
+        # videopath 视频路径，/zsh/videos/
+        # video 视频名字，17
+        # outPutDir 视频文件抽帧后图片存放路径,/zsh/videos/label_data/images/
+        # fileUrl 从数据库拿到的需要抽帧视频的路径，在服务器里，
+            # /data/dataset/yd_pose/dance/k-pop/maria/ori_data/round_1/videos/17.mp4
+        # frame_cnt 表单数据，无
         # 提取视频帧，并且保存到指定文件里
         get_frame(videopath, video, outPutDir, fileurl, frame_cnt)
     # 返回集合，里面存放code，msg，是否正确
