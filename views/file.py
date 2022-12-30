@@ -71,6 +71,7 @@ def create_label(filePath, userFileId, person_id, person):
     print(id)
     # 创建节点并且保存至数据库中
     create_point(person, id, person_id)
+    
 
 # 根据userFilesid获取img_id
 # 根据img_id获取label_id
@@ -432,6 +433,7 @@ def label_download():
 # 上传xml骨骼点数据，修改数据库中对应的数据
 @app.route('/upload_label_file', methods=['GET','POST'])
 def uploadlabelfile():
+    from flask_wtf import FileField
     # request.method 获取当前请求方式
     if request.method == 'GET':
         # render_template 模板,引入html文件
@@ -464,12 +466,13 @@ def uploadlabelfile():
         except:
             resp['msg'] = '文件名错误'
             return resp
-        # 数据库查询
+        # 数据库查询,根据路径，名字查询userFileId
         sql = '''select userFileId from userfile where filePath="{}" and fileName="{}"'''.format(filePath, filename)
         result = db_file(sql)
         # 判断result是否为None
         if result:
             userFileId = result[0]['userFileId']
+            # 根据userFileId查询img_id
             sql = '''select img_id from ai_image where file_id={}'''.format(userFileId)
             result = db_file(sql)
             # 判断result是否不为None

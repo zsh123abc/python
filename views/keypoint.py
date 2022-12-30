@@ -61,6 +61,7 @@ def get_dbtype_point(person):
                    'R_Hip', 'L_Knee', 'R_Knee', 'L_Ankle', 'R_Ankle', 'Nose', 'L_Ear', 'L_Eye', 'R_Eye', 'R_Ear']
     # 定义空列表
     keypoint = []
+    # keypoints':'{B_Head:(0.0,273.0.151.0.0.0,2)}
     for key in person['keypoints']:
         # index（）检测字符串中是否包含某子串，包含就返回首次出现的索引
         idx = person_keys.index(key) + 1 # 下标从0开始，所有+1，1
